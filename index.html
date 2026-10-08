@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canadian Association of Family Health Support (CAFHS) | Dynamic Health & AI Navigation</title>
+  <meta name="description" content="Empowering Canadian families with compassionate healthcare navigation, AI health assistance, postpartum support, youth mental wellness, caregiver respite advocacy, and elder care navigation across Canada (CAFHS provides navigation guidance; does not provide direct subsidies).">
+  <meta name="keywords" content="Canadian family health, 988 suicide crisis helpline, 811 healthlink, caregiver respite ontario bc alberta, postpartum depression canada, youth mental health canada, family doctor navigation, chatgpt health companion">
+  <meta name="author" content="Canadian Association of Family Health Support">
+  
+  <!-- Open Graph / Social Sharing -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Canadian Association of Family Health Support (CAFHS)">
+  <meta property="og:description" content="Free, compassionate healthcare navigation, caregiver advocacy, and AI-powered family health support across Canada.">
+  <meta property="og:image" content="assets/images/cafhs-logo.jpg">
+
+  <!-- Favicon Icon -->
+  <link rel="icon" type="image/jpeg" href="assets/images/cafhs-logo.jpg">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/admin-auth.css">
+  <link rel="stylesheet" href="css/chat.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <!-- Accessibility Skip Link -->
+  <a href="#main-content" class="skip-to-content">Skip to main content</a>
+
+  <!-- Top Informational & Language Bar -->
+  <div class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-left">
+        <span class="cra-badge" data-i18n="registered_charity">Canadian Non-Profit Community Association | Dedicated to Family Health Support</span>
+      </div>
+      <div class="top-bar-right">
+        <button type="button" class="contrast-toggle" onclick="window.app.toggleHighContrast()" aria-label="Toggle High Contrast Mode">👁️ High Contrast</button>
+        <div class="lang-switch" role="group" aria-label="Language Selector">
+          <button type="button" id="btn-lang-en" class="lang-btn active" onclick="window.app.setLanguage('en')">EN</button>
+          <button type="button" id="btn-lang-fr" class="lang-btn" onclick="window.app.setLanguage('fr')">FR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Canadian Crisis Emergency Ribbon -->
+  <aside class="crisis-banner" aria-label="Emergency Crisis Helplines">
+    <div class="container crisis-banner-inner">
+      <div class="crisis-text-group">
+        <span class="crisis-pulse"></span>
+        <span data-i18n="crisis_banner">In crisis? Call or text 9-8-8 for Canada's Suicide Crisis Helpline (24/7, Toll-Free)</span>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <a href="tel:988" class="btn-crisis-top" data-i18n="quick_call">Call 9-8-8</a>
+        <a href="tel:811" class="btn-crisis-top" style="background:#E6F5F5; color:#0D3B3A;" data-i18n="health_link">Advice: 8-1-1</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Sticky Main Navigation -->
+  <header class="main-header">
+    <div class="container navbar">
+      <a href="#" class="brand-logo" aria-label="CAFHS Home">
+        <img src="assets/images/cafhs-logo.jpg" alt="CAFHS Official Logo" class="brand-logo-img">
+        <div class="logo-text">
+          <span class="logo-name">CAFHS • ACSSF</span>
+          <span class="logo-sub">Canadian Association of Family Health Support</span>
+        </div>
+      </a>
+
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links" id="nav-links">
+          <li class="nav-item"><a href="#hero" data-i18n="nav_home">Home</a></li>
+          <li class="nav-item"><a href="#programs" data-i18n="nav_programs">Programs</a></li>
+          <li class="nav-item"><a href="#bulletins">Bulletins</a></li>
+          <li class="nav-item"><a href="#directory" data-i18n="nav_directory">Navigator</a></li>
+          <li class="nav-item"><a href="#assessments" data-i18n="nav_assessments">Screeners</a></li>
+          <li class="nav-item"><a href="#intake" data-i18n="nav_intake">Intake</a></li>
+          <li class="nav-item"><a href="#events" data-i18n="nav_events">Workshops</a></li>
+          <li class="nav-item"><a href="#donate" data-i18n="nav_donate">Support</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- Email Notification Bell -->
+        <button type="button" class="notif-bell-btn" onclick="window.emailService.openNotificationModal()" title="View Email Notifications & Dispatches" aria-label="Notifications">
+          🔔
+          <span id="notif-unread-badge" class="notif-unread-badge" style="display:none;">0</span>
+        </button>
+
+        <!-- Unauthenticated Guest Buttons -->
+        <div id="nav-guest-actions" class="nav-guest-btns">
+          <button type="button" class="btn-auth-outline" onclick="window.authService.openAuthModal('signin')">Sign In</button>
+          <button type="button" class="btn-auth-solid" onclick="window.authService.openAuthModal('signup')">Register</button>
+        </div>
+
+        <!-- Authenticated User Pull-Down Menu -->
+        <div id="nav-user-actions" class="user-dropdown-container" style="display: none;">
+          <button type="button" class="user-dropdown-trigger" id="user-dropdown-btn" onclick="window.app.toggleUserDropdown()" aria-expanded="false" aria-haspopup="true">
+            <span class="user-avatar-badge" id="nav-user-avatar">🌸</span>
+            <div class="user-info-text">
+              <span class="user-name-text" id="nav-user-name">Sarah Chen</span>
+              <span class="role-badge user" id="nav-user-role">Member</span>
+            </div>
+            <span class="dropdown-chevron">▾</span>
+          </button>
+          
+          <div class="user-dropdown-menu" id="user-dropdown-menu">
+            <div class="dropdown-user-header">
+              <div class="dropdown-user-avatar" id="dropdown-user-avatar">🌸</div>
+              <div class="dropdown-user-meta">
+                <strong id="dropdown-user-name">Sarah Chen</strong>
+                <span id="dropdown-user-email">sarah.chen@example.ca</span>
+                <span class="role-badge user" id="dropdown-user-role" style="align-self:flex-start; margin-top:3px;">Member</span>
+              </div>
+            </div>
+            
+            <div class="dropdown-divider"></div>
+            
+            <a href="javascript:void(0)" class="dropdown-item" onclick="window.app.openUserPortalModal(); window.app.closeUserDropdown();">
+              <span class="dropdown-item-icon">👤</span>
+              <div class="dropdown-item-text">
+                <span class="dropdown-item-title">My Health Portal</span>
+                <small class="dropdown-item-desc">Saved screenings, programs & wellness profile</small>
+              </div>
+            </a>
+            
+            <a href="javascript:void(0)" id="nav-admin-link" class="dropdown-item dropdown-admin-item" style="display:none;" onclick="window.adminPortal.open(); window.app.closeUserDropdown();">
+              <span class="dropdown-item-icon">⚙️</span>
+              <div class="dropdown-item-text">
+                <span class="dropdown-item-title" style="color: #B45309; font-weight: 700;">Admin Console</span>
+                <small class="dropdown-item-desc">User database, content & chat transcripts</small>
+              </div>
+            </a>
+
+            <a href="javascript:void(0)" class="dropdown-item" onclick="window.emailService.openNotificationModal(); window.app.closeUserDropdown();">
+              <span class="dropdown-item-icon">📧</span>
+              <div class="dropdown-item-text">
+                <span class="dropdown-item-title">Notification Inbox</span>
+                <small class="dropdown-item-desc">Official email receipts & care alerts</small>
+              </div>
+            </a>
+
+            <div class="dropdown-divider"></div>
+
+            <a href="javascript:void(0)" class="dropdown-item dropdown-logout-item" onclick="window.authService.logout(); window.app.closeUserDropdown();">
+              <span class="dropdown-item-icon">🚪</span>
+              <div class="dropdown-item-text">
+                <span class="dropdown-item-title" style="color: var(--crisis-red); font-weight: 700;">Sign Out</span>
+                <small class="dropdown-item-desc">Safely conclude your session</small>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="mobile-menu-btn" onclick="window.app.toggleMobileNav()" aria-label="Toggle Mobile Navigation">
+        ☰
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Body -->
+  <main id="main-content">
+    
+    <!-- Hero Section -->
+    <section id="hero" class="hero-section">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <div class="hero-badge" data-i18n="hero_badge">🍁 Trusted Canadian Family Health Network</div>
+          <h1 class="hero-title" data-i18n="hero_title">Compassionate Health Support for Every Canadian Family</h1>
+          <p class="hero-subtitle" data-i18n="hero_subtitle">From postpartum & newborn transitions to youth mental wellness, caregiver respite navigation, and elder care advocacy — we help families navigate Canada's healthcare landscape with personalized guidance and ChatGPT-powered support.</p>
+          
+          <div class="hero-cta-group">
+            <button type="button" class="btn btn-primary btn-lg" onclick="window.app.openChat()">
+              🍁 <span data-i18n="hero_cta_chat">Chat with AI Health Companion</span>
+            </button>
+            <a href="#programs" class="btn btn-outline btn-lg" data-i18n="hero_cta_explore">Explore Support Programs</a>
+          </div>
+
+          <div class="hero-stats-grid">
+            <div class="hero-stat-card">
+              <span class="stat-num" data-i18n="hero_stat_families">18,500+</span>
+              <span class="stat-label" data-i18n="hero_stat_families_label">Canadian Families Supported</span>
+            </div>
+            <div class="hero-stat-card">
+              <span class="stat-num" data-i18n="hero_stat_provinces">13</span>
+              <span class="stat-label" data-i18n="hero_stat_provinces_label">Provinces & Territories</span>
+            </div>
+            <div class="hero-stat-card">
+              <span class="stat-num" data-i18n="hero_stat_caregivers">45,000+</span>
+              <span class="stat-label" data-i18n="hero_stat_caregivers_label">Caregiver Relief Hours</span>
+            </div>
+            <div class="hero-stat-card">
+              <span class="stat-num" data-i18n="hero_stat_response">24/7</span>
+              <span class="stat-label" data-i18n="hero_stat_response_label">ChatGPT AI & 988 Navigation</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="hero-img-card">
+            <img src="assets/images/family-consultation.jpg" alt="Canadian family health consultation in modern clinic">
+            
+            <div class="hero-float-card float-top">
+              <div class="float-icon">🩺</div>
+              <div class="float-info">
+                <h5>Canadian Clinical Advisory</h5>
+                <p>Clinician & Social Worker Backed</p>
+              </div>
+            </div>
+
+            <div class="hero-float-card float-bottom">
+              <div class="float-icon">🤖</div>
+              <div class="float-info">
+                <h5>Nova AI Companion</h5>
+                <p>Connected with ChatGPT API</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Help Immediate Helplines Section -->
+    <section class="container" aria-label="Immediate Health Lines">
+      <div class="quick-help-section">
+        <div class="quick-help-grid">
+          <div class="helpline-box">
+            <div class="helpline-icon">🆘</div>
+            <div class="helpline-info">
+              <h4>Suicide Crisis Helpline</h4>
+              <p>24/7 Toll-Free Support (Call or Text)</p>
+              <a href="tel:988" class="helpline-number">Dial 9-8-8</a>
+            </div>
+          </div>
+
+          <div class="helpline-box">
+            <div class="helpline-icon">🩺</div>
+            <div class="helpline-info">
+              <h4>HealthLink Tele-Care</h4>
+              <p>Registered Nurse Medical Advice</p>
+              <a href="tel:811" class="helpline-number">Dial 8-1-1</a>
+            </div>
+          </div>
+
+          <div class="helpline-box">
+            <div class="helpline-icon">🤝</div>
+            <div class="helpline-info">
+              <h4>211 Community Care</h4>
+              <p>Food, Housing & Respite Navigation</p>
+              <a href="tel:211" class="helpline-number">Dial 2-1-1</a>
+            </div>
+          </div>
+
+          <div class="helpline-box">
+            <div class="helpline-icon">🧸</div>
+            <div class="helpline-info">
+              <h4>Kids Help Phone</h4>
+              <p>Youth & Teen Mental Wellness</p>
+              <a href="tel:18006686868" class="helpline-number">1-800-668-6868</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dynamic Core Programs & Care Pillars -->
+    <section id="programs" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag" data-i18n="programs_tag">Our Dynamic Pillars</span>
+          <h2 class="section-title" data-i18n="programs_title">Comprehensive Family Health & Care Programs</h2>
+          <p class="section-subtitle" data-i18n="programs_subtitle">Comprehensive community health navigation and family support services updated dynamically by our clinical team. <br><small style="font-size:0.85rem; color:var(--text-muted); display:inline-block; margin-top:0.4rem;">Please note: CAFHS provides navigational guidance and community peer support; we do not distribute direct cash or financial subsidies.</small></p>
+        </div>
+
+        <div id="dynamic-programs-grid" class="programs-grid">
+          <!-- Dynamically populated by app.js from contentStore -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Dynamic Health Bulletins & Articles Section -->
+    <section id="bulletins" class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Canadian Healthcare News</span>
+          <h2 class="section-title">Latest Family Health Bulletins & Guides</h2>
+          <p class="section-subtitle">Evidence-informed articles, caregiver respite policies, and provincial healthcare insights published regularly.</p>
+        </div>
+
+        <div id="dynamic-articles-grid" class="articles-grid">
+          <!-- Dynamically populated by app.js from contentStore -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Provincial Health Resource Directory & Navigator -->
+    <section id="directory" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag" data-i18n="dir_tag">Interactive Navigator</span>
+          <h2 class="section-title" data-i18n="dir_title">Canadian Provincial Healthcare & Support Directory</h2>
+          <p class="section-subtitle" data-i18n="dir_subtitle">Select your province or territory to find verified local health authorities, tele-health services, specialized family programs, and emergency support.</p>
+        </div>
+
+        <div class="directory-controls">
+          <div class="search-input-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="dir-search-input" class="search-input" placeholder="Search by keyword (e.g., postpartum, dementia, youth, 811, Calgary, Toronto)..." data-i18n-placeholder="dir_search_placeholder">
+          </div>
+
+          <div>
+            <select id="dir-province-select" class="custom-select" aria-label="Filter by Canadian Province">
+              <option value="ALL" data-i18n="dir_filter_all">All Provinces & Territories</option>
+              <option value="ON">Ontario (ON)</option>
+              <option value="BC">British Columbia (BC)</option>
+              <option value="AB">Alberta (AB)</option>
+              <option value="QC">Québec (QC)</option>
+              <option value="NS">Nova Scotia (NS)</option>
+              <option value="NB">New Brunswick (NB)</option>
+              <option value="MB">Manitoba (MB)</option>
+              <option value="SK">Saskatchewan (SK)</option>
+              <option value="PE">Prince Edward Island (PE)</option>
+              <option value="NL">Newfoundland & Labrador (NL)</option>
+              <option value="YT">Yukon (YT)</option>
+              <option value="NT">Northwest Territories (NT)</option>
+              <option value="NU">Nunavut (NU)</option>
+            </select>
+          </div>
+
+          <div>
+            <select id="dir-category-select" class="custom-select" aria-label="Filter by Care Category">
+              <option value="ALL" data-i18n="dir_category_all">All Categories</option>
+              <option value="mental" data-i18n="dir_category_mental">Mental Health</option>
+              <option value="maternal" data-i18n="dir_category_maternal">Maternal & Child</option>
+              <option value="caregiver" data-i18n="dir_category_caregiver">Caregiver & Seniors</option>
+              <option value="telehealth" data-i18n="dir_category_telehealth">Telehealth & Navigation</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="directory-grid" class="directory-grid">
+          <!-- Populated dynamically by app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Family Wellness Self-Assessments -->
+    <section id="assessments" class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag" data-i18n="assess_tag">Confidential Self-Check</span>
+          <h2 class="section-title" data-i18n="assess_title">Interactive Family Wellness Screeners</h2>
+          <p class="section-subtitle" data-i18n="assess_subtitle">Take a free, evidence-informed check-in to assess caregiver stress or postpartum emotional health. Receive instant personalized guidance and resources.</p>
+        </div>
+
+        <div class="assessment-tabs">
+          <button type="button" id="tab-btn-caregiver" class="tab-btn active" onclick="window.app.switchAssessment('caregiver')" data-i18n="assess_tab_caregiver">
+            Caregiver Strain Index (CSI)
+          </button>
+          <button type="button" id="tab-btn-postpartum" class="tab-btn" onclick="window.app.switchAssessment('postpartum')" data-i18n="assess_tab_postpartum">
+            Postpartum Wellbeing Screener
+          </button>
+        </div>
+
+        <div id="assessment-container">
+          <!-- Populated dynamically by assessments.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Confidential Intake Consultation Booking Section -->
+    <section id="intake" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag" data-i18n="intake_tag">1-on-1 Personalized Care</span>
+          <h2 class="section-title" data-i18n="intake_title">Book a Free Confidential Family Health Intake</h2>
+          <p class="section-subtitle" data-i18n="intake_subtitle">Speak with a certified CAFHS Family Navigator or peer specialist. Triggers automatic email notification confirmation and case tracking.</p>
+        </div>
+
+        <div class="intake-card">
+          <form id="intake-main-form" onsubmit="window.app.submitIntakeForm(event)">
+            <div id="intake-form-fields">
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="intake-name">Full Name / Nom complet *</label>
+                  <input type="text" id="intake-name" class="form-control" placeholder="e.g. Sarah Jenkins" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="intake-email">Email Address / Courriel (for notifications) *</label>
+                  <input type="email" id="intake-email" class="form-control" placeholder="sarah@example.ca" required>
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="intake-phone">Phone Number / Téléphone (Optional)</label>
+                  <input type="tel" id="intake-phone" class="form-control" placeholder="(416) 555-0192">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="intake-province">Province or Territory *</label>
+                  <select id="intake-province" class="form-control" required>
+                    <option value="ON">Ontario (ON)</option>
+                    <option value="BC">British Columbia (BC)</option>
+                    <option value="AB">Alberta (AB)</option>
+                    <option value="QC">Québec (QC)</option>
+                    <option value="NS">Nova Scotia (NS)</option>
+                    <option value="NB">New Brunswick (NB)</option>
+                    <option value="MB">Manitoba (MB)</option>
+                    <option value="SK">Saskatchewan (SK)</option>
+                    <option value="PE">Prince Edward Island (PE)</option>
+                    <option value="NL">Newfoundland & Labrador (NL)</option>
+                    <option value="YT">Yukon (YT)</option>
+                    <option value="NT">Northwest Territories (NT)</option>
+                    <option value="NU">Nunavut (NU)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 1.25rem;">
+                <label class="form-label" for="intake-program-select">Primary Support Focus / Volet d'accompagnement *</label>
+                <select id="intake-program-select" class="form-control" required>
+                  <option value="Caregiver Respite Relief Fund">Caregiver Respite Relief Fund</option>
+                  <option value="Perinatal & Maternal Well-being Pathway">Perinatal & Maternal Well-being Pathway</option>
+                  <option value="Youth & Teen Emotional Resilience Circles">Youth & Teen Emotional Resilience Circles</option>
+                  <option value="Senior Dignity & Home Independence Navigation">Senior Dignity & Home Independence Navigation</option>
+                  <option value="Newcomer Family Healthcare">Newcomer Family Health Navigation</option>
+                  <option value="Financial Aid & Drug Benefits">Drug Benefits & Financial Aid Navigator</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label class="form-label" for="intake-notes">Brief Overview of Your Family's Situation (Confidential)</label>
+                <textarea id="intake-notes" class="form-control" rows="3" placeholder="Tell us how we can best support you and your preferred time for a consultation..."></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;" data-i18n="intake_submit_btn">
+                Request Confidential Consultation (Sends Email Confirmation)
+              </button>
+            </div>
+
+            <div id="intake-confirmation-content" style="display: none;"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Community Health Support & Grassroots Impact Section -->
+    <section id="donate" class="section section-alt">
+      <div class="container">
+        <div class="donation-section-card">
+          <div class="donation-left">
+            <span class="section-tag" data-i18n="donate_tag">Support Grassroots Care</span>
+            <h3 data-i18n="donate_title">Support Canadian Families in Need</h3>
+            <p data-i18n="donate_subtitle">As a Canadian non-profit community association, 100% of community gifts directly fund respite relief hours for exhausted caregivers and peer mental wellness circles. (Contributions are direct community gifts supporting our grassroots mission and not CRA tax-deductible).</p>
+
+            <div class="donation-freq-toggle">
+              <button type="button" id="freq-onetime" class="freq-btn active" onclick="window.app.setDonationFrequency('one-time')" data-i18n="donate_one_time">One-Time Contribution</button>
+              <button type="button" id="freq-monthly" class="freq-btn" onclick="window.app.setDonationFrequency('monthly')" data-i18n="donate_monthly">Monthly Support</button>
+            </div>
+
+            <div class="donation-presets">
+              <button type="button" class="donation-preset-btn" data-amount="25" onclick="window.app.setDonationAmount(25)">$25</button>
+              <button type="button" class="donation-preset-btn" data-amount="50" onclick="window.app.setDonationAmount(50)">$50</button>
+              <button type="button" class="donation-preset-btn selected" data-amount="100" onclick="window.app.setDonationAmount(100)">$100</button>
+              <button type="button" class="donation-preset-btn" data-amount="250" onclick="window.app.setDonationAmount(250)">$250</button>
+            </div>
+
+            <div class="custom-amount-group">
+              <span class="currency-prefix">$</span>
+              <input type="number" id="custom-donation-input" class="custom-amount-input" placeholder="Other amount (CAD)" oninput="window.app.setCustomDonationAmount(this.value)">
+            </div>
+
+            <button type="button" class="btn btn-secondary btn-lg" style="width: 100%; font-weight: 700; box-shadow: var(--shadow-md);" onclick="window.app.openContributionCheckoutModal()" data-i18n="donate_button">
+              🍁 Complete Contribution & Issue Receipt
+            </button>
+            <div style="margin-top: 0.75rem; text-align: center; font-size: 0.8rem; color: var(--text-subtle);">
+              🎓 <strong>Ontario Educational Institutions:</strong>
+              <a href="javascript:void(0)" onclick="window.app.openPartnerRegistrationModal()" style="color: var(--primary); font-weight: 700; text-decoration: underline; margin-left: 4px;">
+                Register to accept caregiver training bursaries & donations →
+              </a>
+            </div>
+          </div>
+
+          <div class="donation-right">
+            <div class="tax-calc-box">
+              <div class="tax-calc-title">
+                <span>🇨🇦</span>
+                <strong data-i18n="donate_tax_calc_title">Community Health Impact Estimator</strong>
+              </div>
+
+              <div class="tax-calc-row">
+                <span>Contribution Amount:</span>
+                <strong id="calc-don-amount">$100.00 CAD</strong>
+              </div>
+              <div class="tax-calc-row">
+                <span>Community Program Allocation:</span>
+                <strong id="calc-tax-credit" class="tax-credit-val">100% to Community Programs</strong>
+              </div>
+              <div class="tax-calc-row highlight">
+                <span>Direct Grassroots Funding:</span>
+                <strong id="calc-net-cost">$100.00 CAD</strong>
+              </div>
+
+              <div class="impact-preview">
+                <p id="calc-impact-text">Provides a caregiver burnout relief coaching session & respite navigation toolkit.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dynamic Upcoming Events & Learning Circles -->
+    <section id="events" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag" data-i18n="events_tag">Dynamic Learning & Circles</span>
+          <h2 class="section-title" data-i18n="events_title">Free Family Wellness Webinars & Support Groups</h2>
+          <p class="section-subtitle" data-i18n="events_subtitle">Join interactive, clinician-guided virtual sessions. Dispatches calendar and email confirmation upon registration.</p>
+        </div>
+
+        <div id="dynamic-events-grid" class="events-grid">
+          <!-- Dynamically populated by app.js from contentStore -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand">
+          <a href="#" class="brand-logo" style="margin-bottom: 0.5rem;">
+            <img src="assets/images/cafhs-logo.jpg" alt="CAFHS Official Emblem" class="brand-logo-img">
+            <div class="logo-text">
+              <span class="logo-name">CAFHS • ACSSF</span>
+              <span class="logo-sub" style="color: #A3C9C7;">Canadian Association of Family Health Support</span>
+            </div>
+          </a>
+          <p class="footer-desc" data-i18n="footer_mission">The Canadian Association of Family Health Support (CAFHS) is a grassroots Canadian non-profit community association dedicated to bridging the gaps in family healthcare navigation, caregiver respite, youth mental health, and equitable community navigation.</p>
+          <div style="margin-top: 1rem; padding-top: 0.85rem; border-top: 1px solid rgba(255,255,255,0.12); font-size: 0.82rem; color: #A3C9C7; line-height: 1.5;">
+            🎓 <strong>Institutional & Training Partners:</strong><br>
+            <span style="color: #FFFFFF; font-weight: 600;">Ontario Public and Private Education Organizations</span><br>
+            <span style="font-size: 0.76rem; color: #81A8A6;">Career & Community Healthcare Education • Training Partners of CAFHS</span><br>
+            <button type="button" class="btn btn-outline btn-sm" onclick="window.app.openPartnerRegistrationModal()" style="margin-top: 0.5rem; color: #A7F3D0; border-color: #34D399; font-size: 0.76rem; padding: 4px 10px; display: inline-flex; align-items: center; gap: 5px;">
+              🎓 Register as Training Partner to Accept Donations
+            </button>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4 data-i18n="footer_links_title">Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#programs">Programs & Care</a></li>
+            <li><a href="#bulletins">Health Bulletins</a></li>
+            <li><a href="#directory">Provincial Directory</a></li>
+            <li><a href="#assessments">Wellness Screeners</a></li>
+            <li><a href="#intake">Book Intake</a></li>
+            <li><a href="#donate">Donate</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 data-i18n="footer_provinces_title">Regional Coverage</h4>
+          <ul class="footer-links">
+            <li><a href="#directory">Ontario (ON)</a></li>
+            <li><a href="#directory">British Columbia (BC)</a></li>
+            <li><a href="#directory">Alberta (AB)</a></li>
+            <li><a href="#directory">Québec (QC)</a></li>
+            <li><a href="#directory">Atlantic Canada</a></li>
+            <li><a href="#directory">Territories (YT, NT, NU)</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 data-i18n="footer_emergency_title">Crisis & Helplines</h4>
+          <ul class="footer-emergency-list">
+            <li><strong>Suicide Crisis Line:</strong> 9-8-8 (24/7)</li>
+            <li><strong>Non-Emergency Health:</strong> 8-1-1</li>
+            <li><strong>Community Services:</strong> 2-1-1</li>
+            <li><strong>Kids Help Phone:</strong> 1-800-668-6868</li>
+            <li><strong>Indigenous Hope Line:</strong> 1-855-242-3310</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p data-i18n="footer_copyright">© 2026 Canadian Association of Family Health Support (CAFHS / ACSSF). All rights reserved. Canadian Non-Profit Community Association.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       AI Health Companion ("Nova") Floating Launcher & Drawer (ChatGPT API)
+       ========================================================================= -->
+  <button type="button" class="chat-launcher-btn" onclick="window.app.toggleChat()" aria-label="Open AI Health Companion">
+    <div id="chat-lock-badge" class="chat-lock-badge" title="Sign in required to chat">🔒</div>
+    <div class="launcher-icon-wrap">
+      🍁
+      <span class="launcher-pulse"></span>
+    </div>
+    <span data-i18n="nav_chat_btn">Ask AI Health Companion</span>
+  </button>
+
+  <div id="ai-chat-drawer" class="ai-chat-drawer" role="dialog" aria-label="AI Health Companion Chat">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <div class="chat-avatar">🍁</div>
+        <div class="chat-titles">
+          <h4 data-i18n="chat_header_title">Nova • CAFHS AI Companion</h4>
+          <span class="chat-status">
+            <span class="status-dot"></span>
+            <span id="chat-header-status-text" data-i18n="chat_header_subtitle">Canadian Family Health & Community Navigation</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="chat-header-actions">
+        <button type="button" class="chat-tool-btn" onclick="const active = window.chatEngine.toggleSpeechAudio(); this.classList.toggle('active', active);" title="Toggle Voice Audio Reading" aria-label="Audio Reading">
+          🔊
+        </button>
+        <button type="button" class="chat-tool-btn" onclick="window.chatEngine.exportSummary()" title="Export / Print Consultation Notes" aria-label="Export Summary">
+          📄
+        </button>
+        <button type="button" class="chat-tool-btn" onclick="window.chatEngine.clearChat()" title="Clear Chat" aria-label="Clear Chat">
+          🗑️
+        </button>
+        <button type="button" class="chat-tool-btn" onclick="window.app.closeChat()" title="Close Chat" aria-label="Close Chat">
+          ✕
+        </button>
+      </div>
+    </div>
+
+    <div class="chat-disclaimer-bar">
+      <span>🛡️</span>
+      <span data-i18n="chat_disclaimer">Nova provides informational guidance and Canadian health resource navigation. In case of emergency, call 911 or 988.</span>
+    </div>
+
+    <div id="chat-messages-container" class="chat-messages-container">
+      <!-- Populated dynamically by ai-chat.js -->
+    </div>
+
+    <div class="chat-footer">
+      <form id="chat-input-form" class="chat-input-row">
+        <button type="button" id="chat-mic-btn" class="chat-btn-icon" onclick="window.chatEngine.toggleSpeechListening()" title="Voice input (Speech to Text)" aria-label="Voice Input">
+          🎤
+        </button>
+        <input type="text" id="chat-input-text" class="chat-input" placeholder="Type your question or family health concern..." data-i18n-placeholder="chat_input_placeholder" autocomplete="off">
+        <button type="submit" class="chat-btn-icon chat-send-btn" title="Send Message" aria-label="Send Message">
+          ➔
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODALS: Auth, Auth Gate, User Portal, Admin Portal, Email Reader, RSVP
+       ========================================================================= -->
+
+  <!-- 1. Authentication Modal (Sign In / Register) -->
+  <div id="auth-modal" class="modal-overlay">
+    <div class="modal-card auth-modal-card">
+      <button type="button" class="modal-close-btn" onclick="window.authService.closeAuthModal()">✕</button>
+      
+      <div class="auth-tabs-header">
+        <button type="button" id="tab-auth-signin" class="auth-tab-btn active" onclick="window.authService.switchAuthTab('signin')">Sign In</button>
+        <button type="button" id="tab-auth-signup" class="auth-tab-btn" onclick="window.authService.switchAuthTab('signup')">Create Account</button>
+      </div>
+
+      <!-- Social Sign In with Google & LinkedIn -->
+      <div class="social-login-group">
+        <button type="button" class="btn-social-auth btn-social-google" onclick="window.authService.loginWithGoogle()">
+          <svg class="social-icon" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.15z"/>
+            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+            <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+          </svg>
+          <span>Continue with Google</span>
+        </button>
+        <button type="button" class="btn-social-auth btn-social-linkedin" onclick="window.authService.loginWithLinkedIn()">
+          <svg class="social-icon" viewBox="0 0 24 24" fill="#FFFFFF">
+            <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+          </svg>
+          <span>Continue with LinkedIn</span>
+        </button>
+      </div>
+
+      <div class="auth-divider">
+        <span>or with email credentials</span>
+      </div>
+
+      <!-- Sign In Form -->
+      <form id="auth-signin-form" onsubmit="event.preventDefault(); try { window.authService.login(document.getElementById('signin-email').value, document.getElementById('signin-password').value); window.authService.closeAuthModal(); } catch(err) { alert(err.message); }">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="signin-email" class="form-control" placeholder="mack.chen@viccollege.com" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label class="form-label">Password</label>
+          <input type="password" id="signin-password" class="form-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In</button>
+      </form>
+
+      <!-- Sign Up Form -->
+      <form id="auth-signup-form" style="display:none;" onsubmit="event.preventDefault(); try { window.authService.register({ name: document.getElementById('signup-name').value, email: document.getElementById('signup-email').value, password: document.getElementById('signup-password').value, province: document.getElementById('signup-province').value }); window.authService.closeAuthModal(); } catch(err) { alert(err.message); }">
+        <div class="form-group" style="margin-bottom: 0.9rem;">
+          <label class="form-label">Full Name</label>
+          <input type="text" id="signup-name" class="form-control" placeholder="Sarah Chen" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 0.9rem;">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="signup-email" class="form-control" placeholder="sarah@example.ca" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 0.9rem;">
+          <label class="form-label">Province / Territory</label>
+          <select id="signup-province" class="form-control" required>
+            <option value="ON">Ontario (ON)</option>
+            <option value="BC">British Columbia (BC)</option>
+            <option value="AB">Alberta (AB)</option>
+            <option value="QC">Québec (QC)</option>
+            <option value="NS">Nova Scotia (NS)</option>
+            <option value="NB">New Brunswick (NB)</option>
+            <option value="MB">Manitoba (MB)</option>
+            <option value="SK">Saskatchewan (SK)</option>
+            <option value="PE">Prince Edward Island (PE)</option>
+            <option value="NL">Newfoundland & Labrador (NL)</option>
+            <option value="YT">Yukon (YT)</option>
+            <option value="NT">Northwest Territories (NT)</option>
+            <option value="NU">Nunavut (NU)</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label class="form-label">Create Password</label>
+          <input type="password" id="signup-password" class="form-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Create Free CAFHS Account</button>
+      </form>
+
+      <!-- 1-Click Demo Accounts for instant evaluation -->
+      <div class="quick-demo-box">
+        <h6>⚡ Quick One-Click Logins</h6>
+        <div class="demo-buttons-row">
+          <button type="button" class="btn-demo-pill" onclick="window.authService.quickLogin('admin_mack')" title="Sign in as Administrator Mack Chen">
+            👑 Mack Chen (Admin)
+          </button>
+          <button type="button" class="btn-demo-pill" onclick="window.authService.quickLogin('user')" title="Sign in as Member Sarah Chen">
+            👤 Sarah Chen (Member)
+          </button>
+          <button type="button" class="btn-demo-pill" onclick="window.authService.quickLogin('admin')" title="Sign in as Clinical Director Dr. Tremblay">
+            🍁 Dr. Tremblay (Admin)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Social Account Picker: Google Modal -->
+  <div id="social-google-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 480px; padding: 2rem;">
+      <button type="button" class="modal-close-btn" onclick="document.getElementById('social-google-modal').classList.remove('active')">✕</button>
+      <div style="text-align: center; margin-bottom: 1.25rem;">
+        <svg viewBox="0 0 24 24" width="42" height="42" style="margin-bottom: 0.5rem;">
+          <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.15z"/>
+          <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+          <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+          <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+        </svg>
+        <h3 style="margin-bottom: 0.25rem;">Sign in with Google</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0;">Select your Google Account to continue to CAFHS</p>
+      </div>
+
+      <div class="social-account-list">
+        <!-- Account 1: Mack Chen (Admin) -->
+        <button type="button" class="social-account-item" onclick="window.authService.completeSocialLogin('google', 'mack.chen@viccollege.com', 'Mack Chen', 'admin')">
+          <div class="social-user-avatar google">M</div>
+          <div class="social-user-info">
+            <div class="social-user-name">Mack Chen <span class="role-badge admin">Admin</span></div>
+            <div class="social-user-email">mack.chen@viccollege.com</div>
+          </div>
+          <span style="font-size: 0.82rem; color: var(--primary); font-weight: 700;">Continue →</span>
+        </button>
+
+        <!-- Account 2: Sarah Chen (User) -->
+        <button type="button" class="social-account-item" onclick="window.authService.completeSocialLogin('google', 'sarah.chen@gmail.com', 'Sarah Chen', 'user')">
+          <div class="social-user-avatar google" style="background: #10B981;">S</div>
+          <div class="social-user-info">
+            <div class="social-user-name">Sarah Chen <span class="role-badge user">Member</span></div>
+            <div class="social-user-email">sarah.chen@gmail.com</div>
+          </div>
+          <span style="font-size: 0.82rem; color: var(--primary); font-weight: 700;">Continue →</span>
+        </button>
+      </div>
+
+      <div style="border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: 1rem;">
+        <label class="form-label" style="font-size: 0.85rem; margin-bottom: 0.4rem;">Or enter your Google email:</label>
+        <div style="display: flex; gap: 0.5rem;">
+          <input type="email" id="custom-google-email" class="form-control" placeholder="your.name@gmail.com">
+          <button type="button" class="btn btn-primary" style="white-space: nowrap;" onclick="const em = document.getElementById('custom-google-email').value.trim(); if(em) { const nm = em.split('@')[0].replace('.', ' '); window.authService.completeSocialLogin('google', em, nm); } else { alert('Please enter your Google email'); }">Sign In</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Social Account Picker: LinkedIn Modal -->
+  <div id="social-linkedin-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 480px; padding: 2rem;">
+      <button type="button" class="modal-close-btn" onclick="document.getElementById('social-linkedin-modal').classList.remove('active')">✕</button>
+      <div style="text-align: center; margin-bottom: 1.25rem;">
+        <svg viewBox="0 0 24 24" width="42" height="42" fill="#0A66C2" style="margin-bottom: 0.5rem;">
+          <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+        </svg>
+        <h3 style="margin-bottom: 0.25rem;">Sign in with LinkedIn</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0;">Authorize CAFHS with your LinkedIn professional profile</p>
+      </div>
+
+      <div class="social-account-list">
+        <!-- Account 1: Mack Chen (Admin) -->
+        <button type="button" class="social-account-item" onclick="window.authService.completeSocialLogin('linkedin', 'mack.chen@viccollege.com', 'Mack Chen', 'admin')">
+          <div class="social-user-avatar linkedin">M</div>
+          <div class="social-user-info">
+            <div class="social-user-name">Mack Chen <span class="role-badge admin">Admin</span></div>
+            <div class="social-user-email">mack.chen@viccollege.com &bull; viccollege.com</div>
+          </div>
+          <span style="font-size: 0.82rem; color: var(--primary); font-weight: 700;">Authorize →</span>
+        </button>
+
+        <!-- Account 2: Healthcare Professional -->
+        <button type="button" class="social-account-item" onclick="window.authService.completeSocialLogin('linkedin', 'sarah.chen@linkedin.com', 'Sarah Chen, RN', 'user')">
+          <div class="social-user-avatar linkedin" style="background: #0284C7;">S</div>
+          <div class="social-user-info">
+            <div class="social-user-name">Sarah Chen, RN <span class="role-badge user">Member</span></div>
+            <div class="social-user-email">Community Health Specialist</div>
+          </div>
+          <span style="font-size: 0.82rem; color: var(--primary); font-weight: 700;">Authorize →</span>
+        </button>
+      </div>
+
+      <div style="border-top: 1px solid var(--border-color); padding-top: 1rem; margin-top: 1rem;">
+        <label class="form-label" style="font-size: 0.85rem; margin-bottom: 0.4rem;">Or enter your LinkedIn account email:</label>
+        <div style="display: flex; gap: 0.5rem;">
+          <input type="email" id="custom-linkedin-email" class="form-control" placeholder="your.name@viccollege.com">
+          <button type="button" class="btn btn-primary" style="white-space: nowrap;" onclick="const em = document.getElementById('custom-linkedin-email').value.trim(); if(em) { const nm = em.split('@')[0].replace('.', ' '); window.authService.completeSocialLogin('linkedin', em, nm); } else { alert('Please enter your LinkedIn email'); }">Authorize</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. AI Chatbot Auth Gate Modal -->
+  <div id="auth-gate-modal" class="modal-overlay">
+    <div class="modal-card auth-modal-card" style="text-align: center;">
+      <button type="button" class="modal-close-btn" onclick="window.app.closeAuthGateModal()">✕</button>
+      <div style="font-size: 3rem; margin-bottom: 0.5rem;">🔒</div>
+      <h3 style="margin-bottom: 0.5rem;">Sign In to Access Nova AI</h3>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">
+        The 24/7 AI Health Companion is connected with ChatGPT to provide personalized Canadian healthcare navigation, caregiver respite guidance, and confidential consultation history for registered members.
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+        <button type="button" class="btn btn-primary" onclick="window.app.closeAuthGateModal(); window.authService.quickLogin('admin_mack'); window.app.openChat();">
+          👑 1-Click Sign In as Mack Chen (Admin)
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="window.app.closeAuthGateModal(); window.authService.quickLogin('user'); window.app.openChat();">
+          👤 1-Click Sign In as Sarah Chen (Member)
+        </button>
+        <div style="display: flex; gap: 0.5rem;">
+          <button type="button" class="btn-social-auth btn-social-google" style="flex:1; justify-content:center;" onclick="window.app.closeAuthGateModal(); window.authService.loginWithGoogle();">
+            <svg class="social-icon" viewBox="0 0 24 24" width="18" height="18">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.15z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+            </svg>
+            Google
+          </button>
+          <button type="button" class="btn-social-auth btn-social-linkedin" style="flex:1; justify-content:center;" onclick="window.app.closeAuthGateModal(); window.authService.loginWithLinkedIn();">
+            <svg class="social-icon" viewBox="0 0 24 24" width="18" height="18" fill="#FFFFFF">
+              <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+            </svg>
+            LinkedIn
+          </button>
+        </div>
+        <button type="button" class="btn btn-outline" onclick="window.app.closeAuthGateModal(); window.authService.openAuthModal('signin');">
+          Enter Your Own Credentials
+        </button>
+      </div>
+
+      <small style="color: var(--text-subtle);">Access is 100% free under CAFHS Canadian Non-Profit Community Mission.</small>
+    </div>
+  </div>
+
+  <!-- 3. User Health Portal Modal -->
+  <div id="user-portal-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 800px;">
+      <button type="button" class="modal-close-btn" onclick="window.app.closeUserPortalModal()">✕</button>
+      <div id="user-portal-content"></div>
+    </div>
+  </div>
+
+  <!-- 4. Admin Portal Modal (Full Screen Management) -->
+  <div id="admin-portal-modal" class="modal-overlay">
+    <div class="admin-modal-card">
+      <!-- Admin Header Bar -->
+      <div class="admin-header-bar">
+        <div class="admin-header-left">
+          <img src="assets/images/cafhs-logo.jpg" alt="CAFHS Logo" class="admin-header-logo">
+          <div>
+            <div class="admin-header-title-row">
+              <h3>CAFHS Administrator & Clinical Console</h3>
+              <span class="admin-status-pill">
+                <span class="status-dot-pulse"></span>
+                System Live • SQLite & API Connected
+              </span>
+            </div>
+            <small style="color: #A3C9C7;">Dynamic Health Programs, Intake Governance, Community Donations & ChatGPT AI</small>
+          </div>
+        </div>
+        <div class="admin-header-right">
+          <div class="admin-identity-badge" id="admin-identity-display">
+            <span class="identity-avatar">🍁</span>
+            <div class="identity-info">
+              <strong id="admin-user-name">Executive Administrator</strong>
+              <small id="admin-user-email">admin@cafhs.ca</small>
+            </div>
+          </div>
+          <button type="button" class="admin-header-close-btn" onclick="window.adminPortal.close()" title="Close Admin Console" aria-label="Close Admin Console">✕</button>
+        </div>
+      </div>
+
+      <!-- Main Workspace: Left Sidebar + Right Content Pane -->
+      <div class="admin-workspace-layout">
+        <!-- Modern Categorized Sidebar Navigation -->
+        <aside class="admin-sidebar" aria-label="Admin Navigation">
+          <div class="admin-sidebar-scroll">
+            
+            <!-- Category 1: Executive & Governance -->
+            <div class="admin-nav-group">
+              <span class="admin-nav-group-title">Executive & Governance</span>
+              <button type="button" class="admin-nav-item active" data-tab="overview" onclick="window.adminPortal.switchTab('overview')">
+                <span class="nav-item-icon">📊</span>
+                <span class="nav-item-text">Overview & Metrics</span>
+              </button>
+              <button type="button" class="admin-nav-item" data-tab="users" onclick="window.adminPortal.switchTab('users')">
+                <span class="nav-item-icon">👥</span>
+                <span class="nav-item-text">User Management</span>
+              </button>
+              <button type="button" class="admin-nav-item" data-tab="emails" onclick="window.adminPortal.switchTab('emails')">
+                <span class="nav-item-icon">📧</span>
+                <span class="nav-item-text">Email Alerts Center</span>
+                <span id="badge-nav-emails" class="admin-nav-counter" style="display:none;"></span>
+              </button>
+            </div>
+
+            <!-- Category 2: Finance & Giving -->
+            <div class="admin-nav-group">
+              <span class="admin-nav-group-title">Finance & Giving</span>
+              <button type="button" class="admin-nav-item" data-tab="contributions" onclick="window.adminPortal.switchTab('contributions')">
+                <span class="nav-item-icon">💰</span>
+                <span class="nav-item-text">Donations & Receipts</span>
+              </button>
+              <button type="button" class="admin-nav-item" data-tab="partners" onclick="window.adminPortal.switchTab('partners')">
+                <span class="nav-item-icon">🎓</span>
+                <span class="nav-item-text">Training Partners</span>
+              </button>
+            </div>
+
+            <!-- Category 3: Clinical & Client Care -->
+            <div class="admin-nav-group">
+              <span class="admin-nav-group-title">Clinical & Client Care</span>
+              <button type="button" class="admin-nav-item" data-tab="intakes" onclick="window.adminPortal.switchTab('intakes')">
+                <span class="nav-item-icon">📋</span>
+                <span class="nav-item-text">Client Intakes</span>
+                <span id="badge-nav-intakes" class="admin-nav-counter highlight" style="display:none;"></span>
+              </button>
+              <button type="button" class="admin-nav-item" data-tab="chatlogs" onclick="window.adminPortal.switchTab('chatlogs')">
+                <span class="nav-item-icon">💬</span>
+                <span class="nav-item-text">AI Chat & Crisis Alerts</span>
+              </button>
+            </div>
+
+            <!-- Category 4: Content & Community -->
+            <div class="admin-nav-group">
+              <span class="admin-nav-group-title">Content & Publishing</span>
+              <button type="button" class="admin-nav-item" data-tab="articles" onclick="window.adminPortal.switchTab('articles')">
+                <span class="nav-item-icon">📰</span>
+                <span class="nav-item-text">Health Bulletins</span>
+              </button>
+              <button type="button" class="admin-nav-item" data-tab="programs" onclick="window.adminPortal.switchTab('programs')">
+                <span class="nav-item-icon">🌿</span>
+                <span class="nav-item-text">Programs & Services</span>
+              </button>
+              <button type="button" class="admin-nav-item" data-tab="events" onclick="window.adminPortal.switchTab('events')">
+                <span class="nav-item-icon">🗓️</span>
+                <span class="nav-item-text">Workshops & Events</span>
+              </button>
+            </div>
+
+            <!-- Category 5: AI & System Integration -->
+            <div class="admin-nav-group">
+              <span class="admin-nav-group-title">System & Integrations</span>
+              <button type="button" class="admin-nav-item" data-tab="chatgpt" onclick="window.adminPortal.switchTab('chatgpt')">
+                <span class="nav-item-icon">🤖</span>
+                <span class="nav-item-text">ChatGPT API Config</span>
+              </button>
+              <button type="button" class="admin-nav-item" data-tab="emailconfig" onclick="window.adminPortal.switchTab('emailconfig')">
+                <span class="nav-item-icon">📨</span>
+                <span class="nav-item-text">Outbound Email (SMTP)</span>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Sidebar Footer -->
+          <div class="admin-sidebar-footer">
+            <div class="sidebar-footer-brand">
+              <small>CAFHS Console v2.6</small>
+              <span class="sidebar-online-status">● Live</span>
+            </div>
+            <button type="button" class="btn-sidebar-quick-action" onclick="window.adminPortal.close()">
+              <span>🌐</span> Public Site
+            </button>
+          </div>
+        </aside>
+
+        <!-- Main Body Content Pane -->
+        <main id="admin-tab-content" class="admin-main-body" role="main">
+          <!-- Rendered by admin.js -->
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Email Notification Reader Modal -->
+  <div id="email-notification-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 950px; padding: 1.5rem;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h4 style="margin:0;">📧 CAFHS Official Email Notification Inbox</h4>
+        <button type="button" class="modal-close-btn" style="position:static;" onclick="window.emailService.closeNotificationModal()">✕</button>
+      </div>
+      <div class="email-modal-grid">
+        <div id="email-list-container" class="email-list-panel"></div>
+        <div id="email-detail-container" class="email-detail-panel"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Full Article Reader Modal -->
+  <div id="article-reader-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 750px;">
+      <button type="button" class="modal-close-btn" onclick="window.app.closeArticleModal()">✕</button>
+      <div id="article-reader-content"></div>
+    </div>
+  </div>
+
+  <!-- 7. AI Model Settings Modal -->
+  <div id="ai-settings-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 540px;">
+      <button type="button" class="modal-close-btn" onclick="window.app.closeSettingsModal()">✕</button>
+      <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+        <span style="font-size: 1.8rem;">🤖</span>
+        <div>
+          <h3 style="margin: 0;">Configure ChatGPT API Key</h3>
+          <small style="color: var(--primary); font-weight: 600;">Connect directly to OpenAI for live AI answers</small>
+        </div>
+      </div>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+        Enter your OpenAI API key to have Nova AI connect directly with ChatGPT when answering questions. All inquiries will be processed in real-time by OpenAI's state-of-the-art models.
+      </p>
+
+      <form onsubmit="window.app.saveAISettings(event)">
+        <div class="form-group" style="margin-bottom: 0.9rem;">
+          <label class="form-label" for="settings-provider-select">AI Engine Provider</label>
+          <select id="settings-provider-select" class="form-control" onchange="window.app.onProviderChange(this.value)">
+            <option value="openai" selected>OpenAI (ChatGPT API - Recommended)</option>
+            <option value="gemini">Google Gemini API</option>
+            <option value="builtin">Built-in Canadian Family Health Engine (Offline Fallback)</option>
+          </select>
+        </div>
+
+        <div id="settings-model-group" class="form-group" style="margin-bottom: 0.9rem;">
+          <label class="form-label" for="settings-model-select">ChatGPT Model</label>
+          <select id="settings-model-select" class="form-control">
+            <option value="gpt-4o-mini" selected>gpt-4o-mini (Fast, High Intelligence, Cost-Effective - Recommended)</option>
+            <option value="gpt-4o">gpt-4o (Most Intelligent Flagship Multimodal Model)</option>
+            <option value="gpt-3.5-turbo">gpt-3.5-turbo (Legacy Fast Model)</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+            <label class="form-label" for="settings-apikey-input" style="margin: 0;">API Key (sk-proj-... / AI Key)</label>
+            <button type="button" class="btn-text-link" onclick="window.app.toggleKeyVisibility()" style="font-size: 0.78rem; color: var(--primary); background: none; border: none; cursor: pointer; text-decoration: underline;">👁️ Show / Hide</button>
+          </div>
+          <input type="password" id="settings-apikey-input" class="form-control" placeholder="sk-proj-..." autocomplete="off">
+          <small style="font-size: 0.75rem; color: var(--text-subtle); display: block; margin-top: 0.25rem;">Stored securely in your local browser storage and used directly to communicate with OpenAI.</small>
+        </div>
+
+        <!-- Connection Test Box -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; padding: 0.75rem 1rem; background: #F8FAFC; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          <div>
+            <div style="font-size: 0.82rem; font-weight: 700; color: #1E293B;">Verify Connection</div>
+            <div id="api-test-status" style="font-size: 0.75rem; color: #64748B;">Test if your API key connects to ChatGPT</div>
+          </div>
+          <button type="button" id="btn-test-ai-key" class="btn btn-outline btn-sm" onclick="window.app.testAISettings()" style="white-space: nowrap;">🧪 Test Connection</button>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+          <button type="button" class="btn btn-outline" onclick="window.app.closeSettingsModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save & Connect Directly</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 7.5. Real Contribution Checkout & Donor Receipt Modal -->
+  <div id="contribution-checkout-modal" class="modal-overlay">
+    <div class="modal-card contribution-modal-card">
+      <div class="contrib-header-banner">
+        <button type="button" class="modal-close-btn" style="color:#fff;" onclick="window.app.closeContributionCheckoutModal()">✕</button>
+        <h3>🍁 Support Canadian Families & Respite Care</h3>
+        <p>Your contribution directly empowers grassroots family caregiver respite, perinatal care, and mental health navigation across Canada.</p>
+      </div>
+
+      <div class="contrib-amount-pill-bar">
+        <div>
+          <span style="font-size: 0.78rem; text-transform: uppercase; color: #008080; font-weight: 700; letter-spacing: 0.5px; display: block;">Contribution Tier</span>
+          <span id="checkout-freq-display" style="font-weight: 600; color: #1E293B;">One-Time Gift</span>
+        </div>
+        <strong id="checkout-amount-display">$100.00 CAD</strong>
+      </div>
+
+      <div class="contrib-body">
+        <div class="partner-institution-banner">
+          <span>🎓</span>
+          <div>
+            <strong>Institutional Training & Educational Partners:</strong> All community gifts are received directly by the Canadian Association of Family Health Support (CAFHS). CAFHS administers and allocates student bursaries and healthcare training grants to accredited Ontario public and private educational partners.
+            <div style="margin-top: 3px;">
+              <a href="javascript:void(0)" onclick="window.app.openPartnerRegistrationModal()" style="font-weight: 700; color: #92400E; text-decoration: underline;">
+                Are you an Ontario educational institution? Register with CAFHS to accept training grants & student bursaries →
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <form id="real-contribution-form" onsubmit="window.app.submitRealContribution(event)">
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label class="form-label" for="contrib-donor-name">Contributor Full Name *</label>
+            <input type="text" id="contrib-donor-name" class="form-control" placeholder="e.g. Eleanor Vance" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label class="form-label" for="contrib-donor-email">Donor Email Address (For Official Receipt Dispatch) *</label>
+            <input type="email" id="contrib-donor-email" class="form-control" placeholder="e.g. eleanor.vance@example.ca" required>
+            <small style="font-size: 0.75rem; color: var(--text-subtle); display: block; margin-top: 3px;">
+              An official community contribution acknowledgment receipt will be instantly emailed to this address.
+            </small>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label class="form-label" for="contrib-donor-province">Province / Territory of Origin</label>
+            <select id="contrib-donor-province" class="form-control">
+              <option value="ON" selected>Ontario (ON)</option>
+              <option value="BC">British Columbia (BC)</option>
+              <option value="AB">Alberta (AB)</option>
+              <option value="QC">Québec (QC)</option>
+              <option value="MB">Manitoba (MB)</option>
+              <option value="SK">Saskatchewan (SK)</option>
+              <option value="NS">Nova Scotia (NS)</option>
+              <option value="NB">New Brunswick (NB)</option>
+              <option value="NL">Newfoundland and Labrador (NL)</option>
+              <option value="PE">Prince Edward Island (PE)</option>
+              <option value="NT">Northwest Territories (NT)</option>
+              <option value="YT">Yukon (YT)</option>
+              <option value="NU">Nunavut (NU)</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label class="form-label">Payment Method</label>
+            <div class="contrib-method-grid">
+              <button type="button" id="btn-method-cc" class="contrib-method-btn active" data-method="credit_card" onclick="window.app.setContributionPaymentMethod('credit_card')">
+                <span class="method-icon">💳</span>
+                <span class="method-label">Credit Card</span>
+                <span class="method-desc">Visa / MC / Amex</span>
+              </button>
+              <button type="button" id="btn-method-interac" class="contrib-method-btn" data-method="interac" onclick="window.app.setContributionPaymentMethod('interac')">
+                <span class="method-icon">🏦</span>
+                <span class="method-label">Interac e-Transfer</span>
+                <span class="method-desc">Canada Direct</span>
+              </button>
+              <button type="button" id="btn-method-paypal" class="contrib-method-btn" data-method="paypal" onclick="window.app.setContributionPaymentMethod('paypal')">
+                <span class="method-icon">🅿️</span>
+                <span class="method-label">PayPal / Pay</span>
+                <span class="method-desc">Fast Checkout</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Dynamic Payment Card Fields -->
+          <div id="contrib-card-fields" style="background: #F8FAFC; padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-bottom: 0.85rem;">
+            <div class="form-group" style="margin-bottom: 0.65rem;">
+              <label class="form-label" style="font-size: 0.8rem;">Card Number</label>
+              <input type="text" id="contrib-card-num" class="form-control" placeholder="•••• •••• •••• 4242" value="4532 •••• •••• 8821">
+            </div>
+            <div style="display: flex; gap: 0.75rem;">
+              <div style="flex: 1;">
+                <label class="form-label" style="font-size: 0.8rem;">Expiry</label>
+                <input type="text" id="contrib-card-exp" class="form-control" placeholder="MM/YY" value="08/29">
+              </div>
+              <div style="flex: 1;">
+                <label class="form-label" style="font-size: 0.8rem;">CVC</label>
+                <input type="text" id="contrib-card-cvc" class="form-control" placeholder="CVC" value="789">
+              </div>
+            </div>
+          </div>
+
+          <div id="contrib-interac-notice" style="display:none; background: #FEF3C7; padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid #FCD34D; margin-bottom: 0.85rem; font-size: 0.82rem; color: #92400E;">
+            <strong>Interac e-Transfer Direct Settlement:</strong> Auto-deposit is enabled to <code>contributions@cafhs.ca</code>. Your transaction will be verified and recorded upon completion.
+          </div>
+
+          <div id="contrib-paypal-notice" style="display:none; background: #E0F2FE; padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid #BAE6FD; margin-bottom: 0.85rem; font-size: 0.82rem; color: #0369A1;">
+            <strong>PayPal & Digital Express Checkout:</strong> Express authorization enabled for Canadian family healthcare donations.
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label class="form-label" for="contrib-donor-notes">Gift Note or Dedication (Optional)</label>
+            <input type="text" id="contrib-donor-notes" class="form-control" placeholder="e.g. In honour of family caregivers">
+          </div>
+
+          <div class="contrib-disclosure-box">
+            🛡️ <strong>Non-Profit Association Disclosure:</strong> The Canadian Association of Family Health Support (CAFHS) is an unregistered Canadian non-profit community association. 100% of community gifts directly support frontline family healthcare navigation and caregiver respite programs. Under the Canada Income Tax Act, contributions to unregistered non-profit associations are not tax-deductible as charitable donations.
+          </div>
+
+          <button type="submit" id="btn-submit-real-contrib" class="btn btn-secondary btn-lg" style="width: 100%; font-weight: 700;">
+            🍁 Complete Contribution & Issue Official Receipt
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. Donation Success Receipt Modal -->
+  <div id="donation-success-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 680px; padding: 2rem;">
+      <button type="button" class="modal-close-btn" onclick="document.getElementById('donation-success-modal').classList.remove('active')">✕</button>
+      <div id="donation-modal-details"></div>
+      <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+        <button type="button" class="btn btn-outline" onclick="window.app.printReceipt()">🖨️ Print / Save Official Receipt</button>
+        <button type="button" class="btn btn-primary" onclick="window.emailService.openNotificationModal(); document.getElementById('donation-success-modal').classList.remove('active');">📧 View in Notification Inbox</button>
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('donation-success-modal').classList.remove('active')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. Event RSVP Modal -->
+  <div id="event-rsvp-modal" class="modal-overlay">
+    <div class="modal-card">
+      <button type="button" class="modal-close-btn" onclick="window.app.closeEventModal()">✕</button>
+      <h3 style="margin-bottom: 0.5rem;">🎟️ Free Workshop Registration</h3>
+      <p id="event-modal-title" style="font-weight: 700; color: var(--primary); margin-bottom: 1rem;"></p>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+        Confirm your registration to automatically receive your calendar ticket and Zoom access link via email notification.
+      </p>
+
+      <form onsubmit="window.app.submitEventRSVP(event)">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label">Full Name *</label>
+          <input type="text" id="rsvp-name-input" class="form-control" placeholder="Your Name" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label class="form-label">Email Address (for ticket dispatch) *</label>
+          <input type="email" id="rsvp-email-input" class="form-control" placeholder="you@example.ca" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Confirm RSVP & Send Ticket Email</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 10. Training Partner Registration Modal -->
+  <div id="training-partner-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 760px; max-height: 90vh; overflow-y: auto;">
+      <button type="button" class="modal-close-btn" onclick="window.app.closePartnerRegistrationModal()">✕</button>
+      <div style="text-align: center; margin-bottom: 1.25rem;">
+        <span style="font-size: 2.2rem; display: block; margin-bottom: 0.25rem;">🎓</span>
+        <h3 style="margin-bottom: 0.25rem; color: var(--primary);">Ontario Training Partner Registration</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); max-width: 580px; margin: 0 auto;">
+          Register your public college, university, private career college, or community healthcare education organization to accept direct community donations and student training bursaries.
+        </p>
+      </div>
+
+      <form id="training-partner-reg-form" onsubmit="window.app.submitPartnerRegistration(event)">
+        <!-- Step 1: Institution Details -->
+        <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1rem;">
+          <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--primary); display: flex; align-items: center; gap: 6px;">
+            🏛️ Institution Profile & Accreditation
+          </h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div class="form-group" style="grid-column: span 2; margin-bottom: 0;">
+              <label class="form-label" for="tp-name">Official Institution / Organization Name *</label>
+              <input type="text" id="tp-name" class="form-control" placeholder="e.g. Toronto Allied Health Institute" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="tp-type">Institution Classification *</label>
+              <select id="tp-type" class="form-control" required>
+                <option value="private_career_college" selected>Registered Private Career College (PCC)</option>
+                <option value="public_college">Ontario Public College</option>
+                <option value="university">Ontario University Faculty of Health</option>
+                <option value="community_training_org">Non-Profit Community Training Org</option>
+                <option value="indigenous_education">Indigenous / First Nations Education Org</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="tp-city">Campus Location / Ontario City *</label>
+              <input type="text" id="tp-city" class="form-control" placeholder="e.g. Toronto, Mississauga, Ottawa" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="tp-website">Official Website URL</label>
+              <input type="url" id="tp-website" class="form-control" placeholder="https://www.examplecollege.ca">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="tp-accreditation">Ministry / Accreditation ID (MCU / DLI)</label>
+              <input type="text" id="tp-accreditation" class="form-control" placeholder="e.g. MCU-ON-9120 or DLI #">
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Contact Administration -->
+        <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1rem;">
+          <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--primary); display: flex; align-items: center; gap: 6px;">
+            👤 Designated Contact & Administration
+          </h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="tp-contact-name">Primary Contact Person *</label>
+              <input type="text" id="tp-contact-name" class="form-control" placeholder="e.g. Dr. Eleanor Tremblay" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="tp-contact-title">Title / Department</label>
+              <input type="text" id="tp-contact-title" class="form-control" placeholder="e.g. Dean of Healthcare / Bursary Officer">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="tp-contact-email">Official Institutional Email (for Receipts & EFT Notices) *</label>
+              <input type="email" id="tp-contact-email" class="form-control" placeholder="e.g. bursaries@examplecollege.ca" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="tp-contact-phone">Contact Phone</label>
+              <input type="tel" id="tp-contact-phone" class="form-control" placeholder="e.g. (416) 555-0199">
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Programs & Donation Payout Details -->
+        <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1rem;">
+          <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--primary); display: flex; align-items: center; gap: 6px;">
+            💳 Donation Acceptance & Payout Setup
+          </h4>
+          <div class="form-group" style="margin-bottom: 0.75rem;">
+            <label class="form-label" for="tp-programs">Healthcare & Caregiver Programs Offered *</label>
+            <input type="text" id="tp-programs" class="form-control" placeholder="e.g. Personal Support Worker (PSW), Respite Aide, Youth Mental Health, Dementia Care" required>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="tp-payout-method">Preferred Disbursement Method *</label>
+              <select id="tp-payout-method" class="form-control" required>
+                <option value="direct_deposit" selected>EFT Direct Deposit (Canadian Bank)</option>
+                <option value="interac_etransfer">Interac e-Transfer Auto-Deposit</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="tp-focus">Bursary & Donation Target Focus</label>
+              <input type="text" id="tp-focus" class="form-control" placeholder="e.g. Frontline PSW Student Tuition & Respite Grants" value="Frontline PSW Student Tuition & Respite Grants">
+            </div>
+            <div class="form-group" style="grid-column: span 2; margin-bottom: 0;">
+              <label class="form-label" for="tp-banking">Banking / Disbursement Details *</label>
+              <input type="text" id="tp-banking" class="form-control" placeholder="e.g. TD Bank Transit: 04921 Account: 582-9912 OR Institutional Interac: finance@examplecollege.ca" required>
+              <small style="font-size: 0.74rem; color: var(--text-subtle);">Direct deposit / remittance details used by CAFHS to disburse community donor gifts.</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Agreement Checkbox -->
+        <div style="margin-bottom: 1.25rem;">
+          <label style="display: flex; gap: 8px; align-items: flex-start; font-size: 0.8rem; color: var(--text-color); cursor: pointer;">
+            <input type="checkbox" id="tp-agreement" required style="margin-top: 3px;">
+            <span>
+              We verify that this educational organization is legally recognized in Ontario to provide healthcare, PSW, or community caregiving instruction. We agree to accept community contribution allocations solely to fund student bursaries, caregiver training, and frontline health education.
+            </span>
+          </label>
+        </div>
+
+        <button type="submit" id="btn-submit-tp-reg" class="btn btn-primary btn-lg" style="width: 100%; font-weight: 700;">
+          🎓 Complete Registration & Enable Donation Acceptance
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 11. CAFHS Grant Allocation to Partner Modal (Admin Only) -->
+  <div id="allocate-grant-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 600px;">
+      <button type="button" class="modal-close-btn" onclick="document.getElementById('allocate-grant-modal').classList.remove('active')">✕</button>
+      <div style="text-align: center; margin-bottom: 1.25rem;">
+        <span style="font-size: 2.2rem; display: block; margin-bottom: 0.25rem;">💸</span>
+        <h3 style="margin-bottom: 0.25rem; color: var(--primary);">Allocate CAFHS Grant / Bursary</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">
+          Disburse centralized donor contributions from CAFHS reserves directly to an accredited Ontario training partner.
+        </p>
+      </div>
+
+      <form id="allocate-grant-form" onsubmit="window.adminPortal.submitGrantAllocation(event)">
+        <input type="hidden" id="alloc-partner-id">
+
+        <div style="background: #F8FAFC; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.85rem; margin-bottom: 1rem; font-size: 0.84rem;">
+          <div>Recipient: <strong id="alloc-partner-name-display" style="color: var(--primary);">-</strong></div>
+          <div style="color: #64748B; margin-top: 2px;">Campus: <span id="alloc-partner-city-display">-</span> • Remittance: <span id="alloc-partner-payout-display">-</span></div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0.85rem;">
+          <label class="form-label" for="alloc-amount">Grant Allocation Amount (CAD) *</label>
+          <div class="custom-amount-group">
+            <span class="currency-prefix">$</span>
+            <input type="number" id="alloc-amount" class="form-control" placeholder="e.g. 250.00" min="1" step="0.01" required style="padding-left: 2rem; font-size: 1.1rem; font-weight: 700;">
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0.85rem;">
+          <label class="form-label" for="alloc-purpose">Designated Grant Purpose / Bursary Cohort *</label>
+          <input type="text" id="alloc-purpose" class="form-control" placeholder="e.g. Frontline PSW Student Tuition & Respite Trainee Bursaries" required value="Caregiver Respite & Frontline PSW Student Bursaries">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label class="form-label" for="alloc-memo">Admin Reference Memo / Board Authorization</label>
+          <input type="text" id="alloc-memo" class="form-control" placeholder="e.g. Authorized by CAFHS Management for Q4 2026 Training Batch">
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+          <button type="button" class="btn btn-outline" style="flex: 1;" onclick="document.getElementById('allocate-grant-modal').classList.remove('active')">Cancel</button>
+          <button type="submit" id="btn-submit-alloc" class="btn btn-primary" style="flex: 2; font-weight: 700;">
+            💸 Authorize & Disburse Grant
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/translations.js"></script>
+  <script src="js/directory-data.js"></script>
+  <script src="js/assessments.js"></script>
+  <script src="js/dynamic-content.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/ai-chat.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
