@@ -37,7 +37,7 @@ class AuthService {
       {
         id: 'usr-admin-1',
         name: 'Dr. Marc Tremblay, MSW',
-        email: 'admin@cafhs.ca',
+        email: 'info@cafhs.org',
         password: 'admin',
         role: 'admin',
         province: 'QC',
@@ -132,7 +132,7 @@ class AuthService {
     }
 
     // Auto-grant admin role if specific admin email
-    const assignedRole = (cleanEmail === 'mack.chen@viccollege.com' || cleanEmail === 'admin@cafhs.ca') ? 'admin' : (role || 'user');
+    const assignedRole = (cleanEmail === 'mack.chen@viccollege.com' || cleanEmail === 'info@cafhs.org') ? 'admin' : (role || 'user');
 
     const newUser = {
       id: 'usr-' + Date.now(),
@@ -201,7 +201,7 @@ The CAFHS Team`,
     const users = this.getUsers();
     let user = users.find(u => u.email.toLowerCase() === cleanEmail);
 
-    const isAdminEmail = cleanEmail === 'mack.chen@viccollege.com' || cleanEmail === 'admin@cafhs.ca';
+    const isAdminEmail = cleanEmail === 'mack.chen@viccollege.com' || cleanEmail === 'info@cafhs.org';
     const role = customRole || (isAdminEmail ? 'admin' : (user ? user.role : 'user'));
 
     if (!user) {
@@ -277,7 +277,7 @@ The CAFHS Team`,
     if (target === 'mack') {
       this.login('mack.chen@viccollege.com', 'admin');
     } else if (target === 'admin') {
-      this.login('admin@cafhs.ca', 'admin');
+      this.login('info@cafhs.org', 'admin');
     } else {
       this.login('sarah.chen@example.ca', 'user');
     }

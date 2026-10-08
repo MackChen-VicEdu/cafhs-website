@@ -962,7 +962,7 @@ Canadian Non-Profit Community Association`,
 
     // 3. Dispatch Email Alert to Admin
     window.emailService.sendEmail({
-      to: 'admin@cafhs.ca',
+      to: 'info@cafhs.org',
       toName: 'CAFHS Intake Coordinator',
       subject: `[ADMIN ALERT] New Intake Submission: ${name} (${prov}) - Case #${savedIntake.id}`,
       body: `A new family health intake has been submitted on the CAFHS portal:

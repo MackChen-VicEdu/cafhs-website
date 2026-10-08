@@ -32,7 +32,7 @@ class AdminPortal {
 
   open() {
     if (!window.authService.isAdmin()) {
-      alert('Access Restricted: Please log in with an Administrator account (e.g. admin@cafhs.ca).');
+      alert('Access Restricted: Please log in with an Administrator account (e.g. info@cafhs.org).');
       window.authService.openAuthModal();
       return;
     }
@@ -1192,7 +1192,7 @@ CAFHS Patient Navigation</textarea>
 
     return users.map(u => {
       const isAdmin = u.role === 'admin';
-      const isDefaultSuperAdmin = u.email === 'mack.chen@viccollege.com' || u.email === 'admin@cafhs.ca';
+      const isDefaultSuperAdmin = u.email === 'mack.chen@viccollege.com' || u.email === 'info@cafhs.org';
       const providerIcon = u.provider === 'google' ? '🌐 Google' : (u.provider === 'linkedin' ? '💼 LinkedIn' : '🔑 Local');
       const createdStr = u.created_at ? (u.created_at.split('T')[0] || u.created_at.substring(0, 10)) : 'Recent';
       
@@ -1371,7 +1371,7 @@ CAFHS Patient Navigation</textarea>
       <div class="admin-tab-header">
         <div>
           <h4>💬 Chat Transcripts & Site Management Email Alerts</h4>
-          <p class="section-desc">Audit logs for all user conversations with Nova AI, with automatic email alerts to site management team (admin@cafhs.ca & mack.chen@viccollege.com).</p>
+          <p class="section-desc">Audit logs for all user conversations with Nova AI, with automatic email alerts to site management team (info@cafhs.org & mack.chen@viccollege.com).</p>
         </div>
         <div style="display:flex; gap:0.5rem;">
           <button class="btn btn-outline" onclick="window.adminPortal.switchTab('chatlogs')">🔄 Refresh Logs</button>
@@ -1407,7 +1407,7 @@ CAFHS Patient Navigation</textarea>
           <strong style="color: #166534;">📬 Site Management Notification Flow:</strong>
           <span style="color: #15803D; font-size: 0.88rem; margin-left: 0.5rem;">Each conversation logs user email & name and sends automated email records to:</span>
           <div style="margin-top: 0.4rem;">
-            <code style="background: white; padding: 3px 8px; border-radius: 4px; font-weight: 600; color: #047857; margin-right: 0.5rem; border:1px solid #A7F3D0;">admin@cafhs.ca</code>
+            <code style="background: white; padding: 3px 8px; border-radius: 4px; font-weight: 600; color: #047857; margin-right: 0.5rem; border:1px solid #A7F3D0;">info@cafhs.org</code>
             <code style="background: white; padding: 3px 8px; border-radius: 4px; font-weight: 600; color: #047857; border:1px solid #A7F3D0;">mack.chen@viccollege.com</code>
           </div>
         </div>
@@ -1542,7 +1542,7 @@ ${this.escapeHtml(log.ai_response)}
 
       <div style="background:#FEF3C7; border:1px solid #FDE68A; border-radius:8px; padding:0.75rem 1rem; font-size:0.85rem; color:#92400E;">
         <strong>Site Management Email Dispatched:</strong> Automated notification was recorded in SQLite database table <code>site_management_emails</code> and sent to:
-        <br>• <code>admin@cafhs.ca</code> (Dr. Marc Tremblay)
+        <br>• <code>info@cafhs.org</code> (Dr. Marc Tremblay)
         <br>• <code>mack.chen@viccollege.com</code> (Mack Chen)
       </div>
     `;
@@ -2139,9 +2139,9 @@ ${this.escapeHtml(log.ai_response)}
       smtp_user: '',
       smtp_pass: '',
       has_password: false,
-      from_email: 'admin@cafhs.ca',
+      from_email: 'info@cafhs.org',
       from_name: 'Canadian Association of Family Health Support (CAFHS)',
-      reply_to: 'admin@cafhs.ca'
+      reply_to: 'info@cafhs.org'
     };
 
     try {
@@ -2264,7 +2264,7 @@ ${this.escapeHtml(log.ai_response)}
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
               <div class="form-group" style="margin: 0;">
                 <label class="form-label" for="smtp-user">SMTP Username / Account Email</label>
-                <input type="text" id="smtp-user" class="form-control" placeholder="e.g. admin@cafhs.ca or apikey" value="${this.escapeHtml(config.smtp_user || '')}">
+                <input type="text" id="smtp-user" class="form-control" placeholder="e.g. info@cafhs.org or apikey" value="${this.escapeHtml(config.smtp_user || '')}">
                 <small style="color: #64748B; font-size: 0.74rem;">Full email for Gmail/Outlook; <code>apikey</code> for SendGrid.</small>
               </div>
               <div class="form-group" style="margin: 0;">
@@ -2285,7 +2285,7 @@ ${this.escapeHtml(log.ai_response)}
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
               <div class="form-group" style="margin: 0;">
                 <label class="form-label" for="smtp-from-email">Sender "From" Email *</label>
-                <input type="email" id="smtp-from-email" class="form-control" placeholder="admin@cafhs.ca" value="${this.escapeHtml(config.from_email || 'admin@cafhs.ca')}" required>
+                <input type="email" id="smtp-from-email" class="form-control" placeholder="info@cafhs.org" value="${this.escapeHtml(config.from_email || 'info@cafhs.org')}" required>
                 <small style="color: #64748B; font-size: 0.74rem;">Address appearing on official receipts.</small>
               </div>
               <div class="form-group" style="margin: 0;">
@@ -2296,7 +2296,7 @@ ${this.escapeHtml(log.ai_response)}
 
             <div class="form-group" style="margin-bottom: 1.25rem;">
               <label class="form-label" for="smtp-reply-to">Reply-To Address</label>
-              <input type="email" id="smtp-reply-to" class="form-control" placeholder="admin@cafhs.ca" value="${this.escapeHtml(config.reply_to || 'admin@cafhs.ca')}">
+              <input type="email" id="smtp-reply-to" class="form-control" placeholder="info@cafhs.org" value="${this.escapeHtml(config.reply_to || 'info@cafhs.org')}">
             </div>
 
             <!-- Resend Inbound & API Key Section -->
@@ -2349,7 +2349,7 @@ ${this.escapeHtml(log.ai_response)}
             <form onsubmit="window.adminPortal.sendSmtpTestEmail(event)">
               <div class="form-group" style="margin-bottom: 0.85rem;">
                 <label class="form-label" for="smtp-test-target">Send Verification Email To:</label>
-                <input type="email" id="smtp-test-target" class="form-control" placeholder="your.email@example.ca" value="${this.escapeHtml(window.authService?.currentUser?.email || 'admin@cafhs.ca')}" required>
+                <input type="email" id="smtp-test-target" class="form-control" placeholder="your.email@example.ca" value="${this.escapeHtml(window.authService?.currentUser?.email || 'info@cafhs.org')}" required>
               </div>
 
               <button type="submit" id="btn-run-smtp-test" class="btn btn-secondary" style="width: 100%; font-weight: 700;">
@@ -2459,7 +2459,7 @@ ${this.escapeHtml(log.ai_response)}
       hostEl.value = 'smtp.gmail.com';
       portEl.value = 587;
       secEl.value = 'starttls';
-      if (userEl && !userEl.value) userEl.value = 'admin@cafhs.ca';
+      if (userEl && !userEl.value) userEl.value = 'info@cafhs.org';
     } else if (preset === 'office365') {
       hostEl.value = 'smtp.office365.com';
       portEl.value = 587;

@@ -15,7 +15,7 @@ PORT = int(os.environ.get('PORT', 8085))
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.environ.get('DB_PATH', os.path.join(DIRECTORY, 'cafhs_database.db'))
 
-MANAGEMENT_EMAILS = ['admin@cafhs.ca', 'mack.chen@viccollege.com']
+MANAGEMENT_EMAILS = ['info@cafhs.org', 'mack.chen@viccollege.com']
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)
@@ -132,7 +132,7 @@ def init_db():
     if cursor.fetchone()[0] == 0:
         default_users = [
             ('usr-admin-mack', 'Mack Chen', 'mack.chen@viccollege.com', 'admin', 'google', 'ON', 'Executive Administrator'),
-            ('usr-admin-marc', 'Dr. Marc Tremblay', 'admin@cafhs.ca', 'admin', 'local', 'QC', 'Clinical Director & Social Worker'),
+            ('usr-admin-marc', 'Dr. Marc Tremblay', 'info@cafhs.org', 'admin', 'local', 'QC', 'Clinical Director & Social Worker'),
             ('usr-user-sarah', 'Sarah Chen', 'sarah.chen@example.ca', 'user', 'local', 'ON', 'Community Member')
         ]
         cursor.executemany('''
@@ -257,9 +257,9 @@ def init_db():
             smtp_security TEXT DEFAULT 'starttls',
             smtp_user TEXT DEFAULT '',
             smtp_pass TEXT DEFAULT '',
-            from_email TEXT DEFAULT 'admin@cafhs.ca',
+            from_email TEXT DEFAULT 'info@cafhs.org',
             from_name TEXT DEFAULT 'Canadian Association of Family Health Support (CAFHS)',
-            reply_to TEXT DEFAULT 'admin@cafhs.ca',
+            reply_to TEXT DEFAULT 'info@cafhs.org',
             resend_api_key TEXT DEFAULT '',
             resend_inbound_domain TEXT DEFAULT '',
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -527,7 +527,7 @@ def send_outbound_email(to_email, subject, body_text, sender_email=None, sender_
     security = (cfg.get('smtp_security') or 'starttls').strip().lower()
     user = (cfg.get('smtp_user') or '').strip()
     password = (cfg.get('smtp_pass') or '').strip()
-    from_addr = sender_email or (cfg.get('from_email') or 'admin@cafhs.ca').strip()
+    from_addr = sender_email or (cfg.get('from_email') or 'info@cafhs.org').strip()
     display_name = sender_name or (cfg.get('from_name') or 'CAFHS Canada Health Network').strip()
     reply_to = (cfg.get('reply_to') or from_addr).strip()
 
@@ -760,7 +760,7 @@ class CAFHSRequestHandler(http.server.SimpleHTTPRequestHandler):
             return
 
         # Auto-admin for designated emails
-        if email in ['mack.chen@viccollege.com', 'admin@cafhs.ca']:
+        if email in ['mack.chen@viccollege.com', 'info@cafhs.org']:
             role = 'admin'
 
         conn = sqlite3.connect(DB_PATH)
@@ -1192,9 +1192,9 @@ The Executive Management Team
 Canadian Association of Family Health Support (CAFHS)
 Website: http://localhost:8085
 Institutional & Educational Partners: Ontario public and private education organizations
-Inquiries: admin@cafhs.ca
+Inquiries: info@cafhs.org
 Executive Administrator: Mack Chen (mack.chen@viccollege.com)
-Clinical Director: Dr. Marc Tremblay, MSW (admin@cafhs.ca)
+Clinical Director: Dr. Marc Tremblay, MSW (info@cafhs.org)
 ======================================================================
 """
 
@@ -1360,7 +1360,7 @@ In Solidarity,
 The Executive Management Team
 Canadian Association of Family Health Support (CAFHS)
 Website: http://localhost:8085
-Inquiries: admin@cafhs.ca • mack.chen@viccollege.com
+Inquiries: info@cafhs.org • mack.chen@viccollege.com
 ======================================================================
 """
         dispatch_and_log_email(cursor, contact_email, 'partners@cafhs.ca', partner_subject, partner_body, contact_email, contact_name)
@@ -1555,7 +1555,7 @@ Thank you for your valued partnership in strengthening Ontario's family health w
 In Solidarity,
 The Executive Management Team
 Canadian Association of Family Health Support (CAFHS)
-Inquiries: finance@cafhs.ca • admin@cafhs.ca
+Inquiries: finance@cafhs.ca • info@cafhs.org
 Website: http://localhost:8085
 ======================================================================
 """
@@ -1659,9 +1659,9 @@ New Total:     ${new_total:.2f} CAD to date
         smtp_security = body.get('smtp_security', 'starttls').strip().lower()
         smtp_user = body.get('smtp_user', '').strip()
         smtp_pass = body.get('smtp_pass', '').strip()
-        from_email = body.get('from_email', 'admin@cafhs.ca').strip()
+        from_email = body.get('from_email', 'info@cafhs.org').strip()
         from_name = body.get('from_name', 'Canadian Association of Family Health Support (CAFHS)').strip()
-        reply_to = body.get('reply_to', 'admin@cafhs.ca').strip()
+        reply_to = body.get('reply_to', 'info@cafhs.org').strip()
         resend_api_key = body.get('resend_api_key', '').strip()
         resend_inbound_domain = body.get('resend_inbound_domain', '').strip()
 
@@ -1710,7 +1710,7 @@ New Total:     ${new_total:.2f} CAD to date
         })
 
     def handle_post_smtp_test(self, body):
-        to_email = body.get('to_email', '').strip() or 'admin@cafhs.ca'
+        to_email = body.get('to_email', '').strip() or 'info@cafhs.org'
         
         temp_host = body.get('smtp_host', '').strip()
         temp_port = body.get('smtp_port')
@@ -1734,7 +1734,7 @@ New Total:     ${new_total:.2f} CAD to date
         else:
             password = cfg.get('smtp_pass', '').strip()
 
-        from_email = temp_from if temp_from else cfg.get('from_email', 'admin@cafhs.ca').strip()
+        from_email = temp_from if temp_from else cfg.get('from_email', 'info@cafhs.org').strip()
         from_name = temp_name if temp_name else cfg.get('from_name', 'Canadian Association of Family Health Support').strip()
 
         if not host:
@@ -1769,7 +1769,7 @@ In Health & Community,
 The Executive Management Team
 Canadian Association of Family Health Support (CAFHS)
 Website: http://localhost:8085
-Inquiries: admin@cafhs.ca
+Inquiries: info@cafhs.org
 ======================================================================
 """
 

@@ -799,7 +799,7 @@ Disclaimer: Remind users gently when appropriate that you provide healthcare edu
     if (window.emailService) {
       const crisisAlert = isCrisis ? '🚨 [CRISIS/988 ALERT] ' : '';
       const managementRecipients = [
-        { email: 'admin@cafhs.ca', name: 'Dr. Marc Tremblay (Clinical Director)' },
+        { email: 'info@cafhs.org', name: 'Dr. Marc Tremblay (Clinical Director)' },
         { email: 'mack.chen@viccollege.com', name: 'Mack Chen (Executive Administrator)' }
       ];
 
