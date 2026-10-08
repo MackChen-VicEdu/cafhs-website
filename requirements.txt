@@ -1,0 +1,2 @@
+# CAFHS Healthcare & Community Support Platform
+# Uses Python standard library (http.server, sqlite3, smtplib, urllib)

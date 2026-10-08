@@ -11,9 +11,9 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from urllib.parse import urlparse, parse_qs
 
-PORT = 8085
+PORT = int(os.environ.get('PORT', 8085))
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(DIRECTORY, 'cafhs_database.db')
+DB_PATH = os.environ.get('DB_PATH', os.path.join(DIRECTORY, 'cafhs_database.db'))
 
 MANAGEMENT_EMAILS = ['admin@cafhs.ca', 'mack.chen@viccollege.com']
 
