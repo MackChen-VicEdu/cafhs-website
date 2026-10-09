@@ -326,18 +326,30 @@ The CAFHS Team`,
     const userAvatarEl = document.getElementById('nav-user-avatar');
     const adminLink = document.getElementById('nav-admin-link');
     const chatLockBadge = document.getElementById('chat-lock-badge');
+    const notifBell = document.getElementById('notif-bell-btn') || document.querySelector('.notif-bell-btn');
+    const dropdownNotifLink = document.getElementById('dropdown-notif-link');
 
     const dropNameEl = document.getElementById('dropdown-user-name');
     const dropEmailEl = document.getElementById('dropdown-user-email');
     const dropRoleEl = document.getElementById('dropdown-user-role');
     const dropAvatarEl = document.getElementById('dropdown-user-avatar');
 
+    const isAdmin = Boolean(this.currentUser && this.currentUser.role === 'admin');
+
+    // Email notification bell & dropdown link are strictly visible to Administrators
+    if (notifBell) {
+      notifBell.style.display = isAdmin ? 'inline-flex' : 'none';
+    }
+    if (dropdownNotifLink) {
+      dropdownNotifLink.style.display = isAdmin ? 'flex' : 'none';
+    }
+
     if (this.currentUser) {
       if (guestNav) guestNav.style.display = 'none';
       if (userNav) userNav.style.display = 'inline-block';
       if (userNameEl) userNameEl.innerText = this.currentUser.name;
       if (userRoleEl) {
-        userRoleEl.innerText = this.currentUser.role === 'admin' ? '🍁 Admin' : '👤 Member';
+        userRoleEl.innerText = isAdmin ? '🍁 Admin' : '👤 Member';
         userRoleEl.className = `role-badge ${this.currentUser.role}`;
       }
       if (userAvatarEl) userAvatarEl.innerText = this.currentUser.avatar || '🍁';
@@ -345,13 +357,13 @@ The CAFHS Team`,
       if (dropNameEl) dropNameEl.innerText = this.currentUser.name;
       if (dropEmailEl) dropEmailEl.innerText = this.currentUser.email;
       if (dropRoleEl) {
-        dropRoleEl.innerText = this.currentUser.role === 'admin' ? '🍁 Administrator' : '👤 Community Member';
+        dropRoleEl.innerText = isAdmin ? '🍁 Administrator' : '👤 Community Member';
         dropRoleEl.className = `role-badge ${this.currentUser.role}`;
       }
       if (dropAvatarEl) dropAvatarEl.innerText = this.currentUser.avatar || '🍁';
 
       if (adminLink) {
-        adminLink.style.display = this.currentUser.role === 'admin' ? 'flex' : 'none';
+        adminLink.style.display = isAdmin ? 'flex' : 'none';
       }
       if (chatLockBadge) chatLockBadge.style.display = 'none';
     } else {

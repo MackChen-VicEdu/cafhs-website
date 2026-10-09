@@ -158,13 +158,24 @@ CAFHS Community Education Hub`,
   updateBadge() {
     const count = this.getUnreadCount();
     const badge = document.getElementById('notif-unread-badge');
+    const notifBell = document.getElementById('notif-bell-btn') || document.querySelector('.notif-bell-btn');
+    const isAdmin = Boolean(window.authService && window.authService.currentUser && window.authService.currentUser.role === 'admin');
+
     if (badge) {
       badge.innerText = count;
-      badge.style.display = count > 0 ? 'inline-flex' : 'none';
+      badge.style.display = count > 0 && isAdmin ? 'inline-flex' : 'none';
+    }
+    if (notifBell) {
+      notifBell.style.display = isAdmin ? 'inline-flex' : 'none';
     }
   }
 
   openNotificationModal(selectedEmailId = null) {
+    const isAdmin = Boolean(window.authService && window.authService.currentUser && window.authService.currentUser.role === 'admin');
+    if (!isAdmin) {
+      if (window.authService) window.authService.openAuthModal('signin');
+      return;
+    }
     const modal = document.getElementById('email-notification-modal');
     if (!modal) return;
 
