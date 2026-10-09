@@ -623,34 +623,39 @@ class CAFHSRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.wfile.write(resp_bytes)
 
     def do_GET(self):
-        parsed = urlparse(self.path)
-        path = parsed.path
-        query = parse_qs(parsed.query)
+        try:
+            parsed = urlparse(self.path)
+            path = parsed.path
+            query = parse_qs(parsed.query)
 
-        if path == '/api/users':
-            self.handle_get_users(query)
-        elif path == '/api/chat/logs':
-            self.handle_get_chat_logs(query)
-        elif path == '/api/admin/emails':
-            self.handle_get_management_emails(query)
-        elif path == '/api/inbound-emails':
-            self.handle_get_inbound_emails(query)
-        elif path == '/api/contributions':
-            self.handle_get_contributions(query)
-        elif path == '/api/training-partners':
-            self.handle_get_training_partners(query)
-        elif path == '/api/allocations':
-            self.handle_get_allocations(query)
-        elif path == '/api/stats':
-            self.handle_get_stats()
-        elif path == '/api/email/config':
-            self.handle_get_smtp_config()
-        elif path in ('/api/resend/sync', '/api/inbound-emails/sync-resend'):
-            self.handle_get_resend_sync()
-        elif path.startswith('/api/'):
-            self.send_json({'error': 'Endpoint not found'}, status=404)
-        else:
-            super().do_GET()
+            if path == '/api/users':
+                self.handle_get_users(query)
+            elif path == '/api/chat/logs':
+                self.handle_get_chat_logs(query)
+            elif path == '/api/admin/emails':
+                self.handle_get_management_emails(query)
+            elif path == '/api/inbound-emails':
+                self.handle_get_inbound_emails(query)
+            elif path == '/api/contributions':
+                self.handle_get_contributions(query)
+            elif path == '/api/training-partners':
+                self.handle_get_training_partners(query)
+            elif path == '/api/allocations':
+                self.handle_get_allocations(query)
+            elif path == '/api/stats':
+                self.handle_get_stats()
+            elif path in ('/api/email/config', '/api/smtp/config'):
+                self.handle_get_smtp_config()
+            elif path in ('/api/resend/sync', '/api/inbound-emails/sync-resend'):
+                self.handle_get_resend_sync()
+            elif path.startswith('/api/'):
+                self.send_json({'error': 'Endpoint not found'}, status=404)
+            else:
+                super().do_GET()
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            self.send_json({'error': str(e)}, status=500)
 
     def do_POST(self):
         parsed = urlparse(self.path)
