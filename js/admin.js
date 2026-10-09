@@ -2349,7 +2349,7 @@ ${this.escapeHtml(log.ai_response)}
             <form onsubmit="window.adminPortal.sendSmtpTestEmail(event)">
               <div class="form-group" style="margin-bottom: 0.85rem;">
                 <label class="form-label" for="smtp-test-target">Send Verification Email To:</label>
-                <input type="email" id="smtp-test-target" class="form-control" placeholder="your.email@example.ca" value="${this.escapeHtml(window.authService?.currentUser?.email || 'info@cafhs.org')}" required>
+                <input type="email" id="smtp-test-target" class="form-control" placeholder="your.email@example.ca" value="${this.escapeHtml(window.authService?.currentUser?.email || 'mack.chen@viccollege.com')}" required>
               </div>
 
               <button type="submit" id="btn-run-smtp-test" class="btn btn-secondary" style="width: 100%; font-weight: 700;">

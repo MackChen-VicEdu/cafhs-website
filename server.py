@@ -1,5 +1,6 @@
 import http.server
 import socketserver
+import functools
 import os
 import sys
 import json
@@ -15,7 +16,7 @@ PORT = int(os.environ.get('PORT', 8085))
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.environ.get('DB_PATH', os.path.join(DIRECTORY, 'cafhs_database.db'))
 
-MANAGEMENT_EMAILS = ['info@cafhs.org', 'mack.chen@viccollege.com']
+MANAGEMENT_EMAILS = ['mack.chen@viccollege.com']
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)
@@ -600,9 +601,6 @@ def dispatch_and_log_email(cursor, recipient, sender, subject, body, user_email,
     return dispatch_res
 
 class CAFHSRequestHandler(http.server.SimpleHTTPRequestHandler):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory=DIRECTORY, **kwargs)
-
     def end_headers(self):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
@@ -612,6 +610,7 @@ class CAFHSRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_OPTIONS(self):
         self.send_response(200)
+        self.send_header('Content-Length', '0')
         self.end_headers()
 
     def send_json(self, data, status=200):
@@ -621,9 +620,12 @@ class CAFHSRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header('Content-Length', str(len(resp_bytes)))
         self.end_headers()
         self.wfile.write(resp_bytes)
+        self.wfile.flush()
 
     def do_GET(self):
         try:
+            print(f"[HTTP GET] {self.path}")
+            sys.stdout.flush()
             parsed = urlparse(self.path)
             path = parsed.path
             query = parse_qs(parsed.query)
@@ -901,8 +903,8 @@ Role:  Verified Logged-in User
 
 =====================================================
 AUTOMATED NOTICE FOR SITE MANAGEMENT:
-This notification was automatically dispatched to the CAFHS site management team
-(Mack Chen & Dr. Marc Tremblay) because a user initiated an AI health consultation session.
+This notification was automatically dispatched to the CAFHS administrator
+(Mack Chen: mack.chen@viccollege.com) because a user initiated an AI health consultation session.
 Database Log ID: #{chat_log_id}
 ====================================================="""
 
@@ -1722,7 +1724,7 @@ New Total:     ${new_total:.2f} CAD to date
         })
 
     def handle_post_smtp_test(self, body):
-        to_email = body.get('to_email', '').strip() or 'info@cafhs.org'
+        to_email = body.get('to_email', '').strip() or 'mack.chen@viccollege.com'
         
         temp_host = body.get('smtp_host', '').strip()
         temp_port = body.get('smtp_port')
@@ -1876,8 +1878,12 @@ Inquiries: info@cafhs.org
 if __name__ == '__main__':
     os.chdir(DIRECTORY)
     init_db()
-    socketserver.ThreadingTCPServer.allow_reuse_address = True
-    with socketserver.ThreadingTCPServer(("", PORT), CAFHSRequestHandler) as httpd:
-        print(f"CAFHS Platform & Database API Server running at http://localhost:{PORT}")
-        sys.stdout.flush()
+    http.server.ThreadingHTTPServer.allow_reuse_address = True
+    handler_class = functools.partial(CAFHSRequestHandler, directory=DIRECTORY)
+    httpd = http.server.ThreadingHTTPServer(("", PORT), handler_class)
+    print(f"CAFHS Platform & Database API Server running at http://localhost:{PORT}")
+    sys.stdout.flush()
+    try:
         httpd.serve_forever()
+    except KeyboardInterrupt:
+        httpd.server_close()
