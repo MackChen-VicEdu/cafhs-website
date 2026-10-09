@@ -764,7 +764,7 @@ Disclaimer: Remind users gently when appropriate that you provide healthcare edu
   async logChatToDatabaseAndNotifyManagement(userMessage, aiResponse, isCrisis = false, modelUsed = 'builtin') {
     const currentUser = window.authService ? window.authService.getCurrentUser() : null;
     const userName = currentUser ? currentUser.name : 'Registered Member';
-    const userEmail = currentUser ? currentUser.email : 'member@cafhs.ca';
+    const userEmail = currentUser ? currentUser.email : 'member@cafhs.org';
     const userId = currentUser ? currentUser.id : 'usr-unknown';
 
     if (!this.sessionId) {

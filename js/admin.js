@@ -2323,7 +2323,7 @@ ${this.escapeHtml(log.ai_response)}
 
               <div class="form-group" style="margin: 0;">
                 <label class="form-label" for="resend-inbound-domain" style="color: #581C87;">Inbound Receiving Address / Domain</label>
-                <input type="text" id="resend-inbound-domain" class="form-control" placeholder="e.g. support@cafhs.ca or inbound.cafhs.ca" value="${this.escapeHtml(config.resend_inbound_domain || '')}">
+                <input type="text" id="resend-inbound-domain" class="form-control" placeholder="e.g. info@cafhs.org or inbound.cafhs.org" value="${this.escapeHtml(config.resend_inbound_domain || '')}">
                 <small style="color: #6B21A8; font-size: 0.73rem;">Your registered Resend receiving address or domain name.</small>
               </div>
             </div>
@@ -2476,7 +2476,7 @@ ${this.escapeHtml(log.ai_response)}
       if (userEl) userEl.value = 'resend';
       const fromEl = document.getElementById('smtp-from-email');
       if (fromEl) {
-        fromEl.value = 'support@cafhs.ca';
+        fromEl.value = 'info@cafhs.org';
       }
     } else if (preset === 'custom') {
       hostEl.value = 'mail.yourdomain.ca';
@@ -2807,7 +2807,7 @@ ${this.escapeHtml(log.ai_response)}
             </div>
             <div class="form-group" style="margin-bottom:0.75rem;">
               <label style="font-size:0.8rem; font-weight:600;">To (Target CAFHS Address):</label>
-              <input type="email" id="sim-inb-recipient" class="form-control" value="support@cafhs.ca" required>
+              <input type="email" id="sim-inb-recipient" class="form-control" value="info@cafhs.org" required>
             </div>
             <div class="form-group" style="margin-bottom:0.75rem;">
               <label style="font-size:0.8rem; font-weight:600;">Subject:</label>

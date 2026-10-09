@@ -279,7 +279,7 @@ def init_db():
     if cursor.fetchone()[0] == 0:
         cursor.execute('''
             INSERT INTO smtp_settings (id, enabled, smtp_host, smtp_port, smtp_security, smtp_user, smtp_pass, from_email, from_name, reply_to, resend_api_key, resend_inbound_domain)
-            VALUES (1, 0, 'smtp.resend.com', 465, 'ssl', 'resend', '', 'support@cafhs.ca', 'Canadian Association of Family Health Support (CAFHS)', 'support@cafhs.ca', '', '')
+            VALUES (1, 0, 'smtp.resend.com', 465, 'ssl', 'resend', '', 'info@cafhs.org', 'Canadian Association of Family Health Support (CAFHS)', 'info@cafhs.org', '', '')
         ''')
         print("Default SMTP & Resend settings record initialized.")
 
@@ -308,11 +308,11 @@ def init_db():
             ) VALUES (
                 'resend_inb_seed_01',
                 'Sarah Jenkins <s.jenkins@ontario-caregivers.org>',
-                'support@cafhs.ca',
+                'info@cafhs.org',
                 'Inquiry: Youth & Senior Caregiver Navigation Partnership in Ontario',
                 'Hello CAFHS Coordination Team,\n\nWe came across your Ontario Family Health and Caregiver Support initiative and would love to coordinate on family respite workshops for rural families in Southern Ontario.\n\nPlease let us know when Dr. Tremblay or your community directors are available for a brief call.\n\nBest regards,\nSarah Jenkins\nDirector of Outreach\nOntario Caregivers Alliance',
                 '<p>Hello CAFHS Coordination Team,</p><p>We came across your Ontario Family Health and Caregiver Support initiative and would love to coordinate on family respite workshops for rural families in Southern Ontario.</p><p>Please let us know when Dr. Tremblay or your community directors are available for a brief call.</p><p>Best regards,<br><strong>Sarah Jenkins</strong><br>Director of Outreach<br>Ontario Caregivers Alliance</p>',
-                '{"from":"s.jenkins@ontario-caregivers.org","to":"support@cafhs.ca","subject":"Inquiry: Youth & Senior Caregiver Navigation Partnership in Ontario"}',
+                '{"from":"s.jenkins@ontario-caregivers.org","to":"info@cafhs.org","subject":"Inquiry: Youth & Senior Caregiver Navigation Partnership in Ontario"}',
                 0,
                 'unread'
             )
@@ -339,7 +339,7 @@ def parse_inbound_payload(body):
     else:
         sender = str(sender_raw)
 
-    to_val = data.get('to') or data.get('recipient') or body.get('to') or 'support@cafhs.ca'
+    to_val = data.get('to') or data.get('recipient') or body.get('to') or 'info@cafhs.org'
     if isinstance(to_val, list):
         to_items = []
         for t in to_val:
@@ -353,7 +353,7 @@ def parse_inbound_payload(body):
     elif isinstance(to_val, dict):
         t_name = to_val.get('name') or ''
         t_email = to_val.get('email') or ''
-        recipient = f"{t_name} <{t_email}>".strip() if t_name else t_email or 'support@cafhs.ca'
+        recipient = f"{t_name} <{t_email}>".strip() if t_name else t_email or 'info@cafhs.org'
     else:
         recipient = str(to_val)
 
@@ -501,8 +501,8 @@ def get_smtp_config():
     return {
         'id': 1, 'enabled': 0, 'smtp_host': 'smtp.resend.com', 'smtp_port': 465,
         'smtp_security': 'ssl', 'smtp_user': 'resend', 'smtp_pass': '',
-        'from_email': 'support@cafhs.ca', 'from_name': 'Canadian Association of Family Health Support (CAFHS)',
-        'reply_to': 'support@cafhs.ca', 'resend_api_key': '', 'resend_inbound_domain': '',
+        'from_email': 'info@cafhs.org', 'from_name': 'Canadian Association of Family Health Support (CAFHS)',
+        'reply_to': 'info@cafhs.org', 'resend_api_key': '', 'resend_inbound_domain': '',
         'has_password': False, 'has_resend_key': False
     }
 
@@ -527,9 +527,16 @@ def send_outbound_email(to_email, subject, body_text, sender_email=None, sender_
     security = (cfg.get('smtp_security') or 'starttls').strip().lower()
     user = (cfg.get('smtp_user') or '').strip()
     password = (cfg.get('smtp_pass') or '').strip()
-    from_addr = sender_email or (cfg.get('from_email') or 'info@cafhs.org').strip()
+
+    # Envelope and Header From address:
+    # Priority:
+    # 1. Configured gateway from_email (if set in Admin settings)
+    # 2. sender_email passed by caller
+    # 3. Default 'info@cafhs.org'
+    configured_from = (cfg.get('from_email') or '').strip()
+    from_addr = configured_from if configured_from else (sender_email or 'info@cafhs.org').strip()
     display_name = sender_name or (cfg.get('from_name') or 'CAFHS Canada Health Network').strip()
-    reply_to = (cfg.get('reply_to') or from_addr).strip()
+    reply_to = sender_email or (cfg.get('reply_to') or from_addr).strip()
 
     msg = MIMEMultipart('alternative')
     msg['Subject'] = subject
@@ -896,7 +903,7 @@ Database Log ID: #{chat_log_id}
 
         created_alerts = []
         for recipient in MANAGEMENT_EMAILS:
-            dispatch_res = dispatch_and_log_email(cursor, recipient, 'nova-ai@cafhs.ca', subject, email_body, user_email, user_name, chat_log_id)
+            dispatch_res = dispatch_and_log_email(cursor, recipient, 'info@cafhs.org', subject, email_body, user_email, user_name, chat_log_id)
             created_alerts.append({
                 'id': cursor.lastrowid,
                 'recipient': recipient,
@@ -1199,7 +1206,7 @@ Clinical Director: Dr. Marc Tremblay, MSW (info@cafhs.org)
 """
 
         # Dispatch email to Donor
-        donor_dispatch = dispatch_and_log_email(cursor, donor_email, 'contributions@cafhs.ca', receipt_subject, receipt_body, donor_email, donor_name)
+        donor_dispatch = dispatch_and_log_email(cursor, donor_email, 'info@cafhs.org', receipt_subject, receipt_body, donor_email, donor_name)
 
         # Also dispatch alert email to Site Management Team
         mgmt_subject = f"💰 [NEW CONTRIBUTION RECEIVED] ${amount:.2f} {currency} from {donor_name} ({donor_email})"
@@ -1220,7 +1227,7 @@ Record ID #{contribution_id} saved in SQLite table 'contributions'.
 """
 
         for recipient in MANAGEMENT_EMAILS:
-            dispatch_and_log_email(cursor, recipient, 'finance@cafhs.ca', mgmt_subject, mgmt_body, donor_email, donor_name)
+            dispatch_and_log_email(cursor, recipient, 'info@cafhs.org', mgmt_subject, mgmt_body, donor_email, donor_name)
 
         conn.commit()
 
@@ -1363,7 +1370,7 @@ Website: http://localhost:8085
 Inquiries: info@cafhs.org • mack.chen@viccollege.com
 ======================================================================
 """
-        dispatch_and_log_email(cursor, contact_email, 'partners@cafhs.ca', partner_subject, partner_body, contact_email, contact_name)
+        dispatch_and_log_email(cursor, contact_email, 'info@cafhs.org', partner_subject, partner_body, contact_email, contact_name)
 
         # 2. Send Alert Email to CAFHS Site Management Team
         mgmt_subject = f"🎓 [NEW TRAINING PARTNER REGISTERED] {institution_name} ({campus_city}, ON)"
@@ -1387,7 +1394,7 @@ Date:           {formatted_date}
 The institution is automatically verified and ready for community allocation in the contribution portal.
 """
         for recipient in MANAGEMENT_EMAILS:
-            dispatch_and_log_email(cursor, recipient, 'partners@cafhs.ca', mgmt_subject, mgmt_body, contact_email, contact_name)
+            dispatch_and_log_email(cursor, recipient, 'info@cafhs.org', mgmt_subject, mgmt_body, contact_email, contact_name)
 
         conn.commit()
 
@@ -1555,11 +1562,11 @@ Thank you for your valued partnership in strengthening Ontario's family health w
 In Solidarity,
 The Executive Management Team
 Canadian Association of Family Health Support (CAFHS)
-Inquiries: finance@cafhs.ca • info@cafhs.org
+Inquiries: info@cafhs.org
 Website: http://localhost:8085
 ======================================================================
 """
-        dispatch_and_log_email(cursor, partner['contact_email'], 'finance@cafhs.ca', remittance_subject, remittance_body, partner['contact_email'], partner['contact_name'])
+        dispatch_and_log_email(cursor, partner['contact_email'], 'info@cafhs.org', remittance_subject, remittance_body, partner['contact_email'], partner['contact_name'])
 
         # 4. Send alert to Management Emails
         mgmt_subject = f"🏛️ [CAFHS GRANT ALLOCATED] ${amount:.2f} CAD disbursed to {partner['institution_name']}"
@@ -1575,7 +1582,7 @@ Remittance:    {partner['payout_method']} ({partner['banking_info']})
 New Total:     ${new_total:.2f} CAD to date
 """
         for recipient in MANAGEMENT_EMAILS:
-            dispatch_and_log_email(cursor, recipient, 'finance@cafhs.ca', mgmt_subject, mgmt_body, partner['contact_email'], partner['contact_name'])
+            dispatch_and_log_email(cursor, recipient, 'info@cafhs.org', mgmt_subject, mgmt_body, partner['contact_email'], partner['contact_name'])
 
         conn.commit()
 
@@ -1847,7 +1854,7 @@ Inquiries: info@cafhs.org
         body_text = (body.get('body') or body.get('body_html') or body.get('content') or '').strip()
         user_name = (body.get('toName') or body.get('user_name') or 'Community Member').strip()
         user_email = (body.get('user_email') or to_email).strip()
-        sender = (body.get('from') or body.get('sender') or 'support@cafhs.ca').strip()
+        sender = (body.get('from') or body.get('sender') or 'info@cafhs.org').strip()
 
         if not to_email or not subject:
             self.send_json({'error': 'Recipient email and subject are required'}, status=400)
