@@ -2829,6 +2829,59 @@ Sarah</textarea>
           </form>
         </div>
       </div>
+
+      <!-- Quick Reply In-Place Modal -->
+      <div id="email-quick-reply-modal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 680px; padding: 2rem;">
+          <button type="button" class="modal-close-btn" onclick="document.getElementById('email-quick-reply-modal').classList.remove('active')">✕</button>
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom: 0.75rem;">
+            <div style="width:40px; height:40px; border-radius:10px; background:#EEF2FF; color:#4338CA; display:flex; align-items:center; justify-content:center; font-size:1.3rem;">
+              ↩️
+            </div>
+            <div>
+              <h3 style="margin:0; color:#0D3B3A; font-size:1.25rem;">Reply to Inbound Message</h3>
+              <p style="margin:0; font-size:0.82rem; color:#64748B;">Compose and send an official response directly through your verified outbound email gateway.</p>
+            </div>
+          </div>
+
+          <form onsubmit="window.adminPortal.submitQuickReply(event)" style="margin-top:1.25rem;">
+            <input type="hidden" id="quick-reply-inbound-id" value="">
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem; margin-bottom:0.75rem;">
+              <div class="form-group" style="margin:0;">
+                <label style="font-size:0.8rem; font-weight:600; color:#334155;">To (Recipient):</label>
+                <input type="email" id="quick-reply-to" class="form-control" required readonly style="background:#F1F5F9; color:#0F172A; font-weight:600;">
+              </div>
+              <div class="form-group" style="margin:0;">
+                <label style="font-size:0.8rem; font-weight:600; color:#334155;">From (Verified Sender):</label>
+                <input type="email" id="quick-reply-from" class="form-control" value="info@cafhs.org" required>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:0.75rem;">
+              <label style="font-size:0.8rem; font-weight:600; color:#334155;">Subject Line:</label>
+              <input type="text" id="quick-reply-subject" class="form-control" required>
+            </div>
+
+            <div class="form-group" style="margin-bottom:1rem;">
+              <label style="font-size:0.8rem; font-weight:600; color:#334155;">Reply Message:</label>
+              <textarea id="quick-reply-body" class="form-control" rows="8" placeholder="Type your reply here..." required style="line-height:1.55; font-size:0.88rem; font-family: inherit;"></textarea>
+            </div>
+
+            <div id="quick-reply-feedback" style="margin-bottom:0.75rem; display:none;"></div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-color); padding-top:1rem;">
+              <span style="font-size:0.75rem; color:#64748B;">
+                🍁 Dispatched via CAFHS SMTP Gateway • Logged in database
+              </span>
+              <div style="display:flex; gap:0.5rem;">
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('email-quick-reply-modal').classList.remove('active')">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="btn-submit-quick-reply" style="font-weight:700;">🚀 Send Reply Now</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
     `;
   }
 
@@ -3084,17 +3137,130 @@ ${this.escapeHtml(email.body || '(Empty body)')}
     // Close detail modal
     document.getElementById('email-audit-detail-modal')?.classList.remove('active');
 
-    // Switch to emailconfig tab with prefilled test panel
-    this.switchTab('emailconfig');
-    setTimeout(() => {
-      const targetEl = document.getElementById('smtp-test-target');
-      if (targetEl) {
-        // extract pure email address from "Name <email>" if present
-        const match = email.sender.match(/<([^>]+)>/);
-        targetEl.value = match ? match[1] : email.sender;
-        targetEl.focus();
+    // Populate Reply modal fields in-place
+    const toInput = document.getElementById('quick-reply-to');
+    const fromInput = document.getElementById('quick-reply-from');
+    const subjInput = document.getElementById('quick-reply-subject');
+    const bodyInput = document.getElementById('quick-reply-body');
+    const idInput = document.getElementById('quick-reply-inbound-id');
+    const feedbackBox = document.getElementById('quick-reply-feedback');
+
+    if (feedbackBox) feedbackBox.style.display = 'none';
+
+    // Extract pure email address from "Name <email>" if present
+    const match = email.sender ? email.sender.match(/<([^>]+)>/) : null;
+    const recipientClean = match ? match[1].trim() : (email.sender || '').trim();
+
+    if (toInput) toInput.value = recipientClean;
+    if (idInput) idInput.value = email.id || '';
+    
+    // Set From email from saved SMTP configuration or info@cafhs.org
+    if (fromInput) {
+      fromInput.value = (this._smtpConfig && this._smtpConfig.from_email) ? this._smtpConfig.from_email : 'info@cafhs.org';
+    }
+
+    if (subjInput) {
+      subjInput.value = email.subject.startsWith('Re:') ? email.subject : `Re: ${email.subject}`;
+    }
+
+    if (bodyInput) {
+      bodyInput.value = `Hello,\n\nThank you for contacting the Canadian Association of Family Health Support (CAFHS).\n\n\n\nSincerely,\nThe Executive Management Team\nCanadian Association of Family Health Support (CAFHS)\nInquiries: info@cafhs.org • Website: https://cafhs.org`;
+      setTimeout(() => {
+        bodyInput.focus();
+        bodyInput.setSelectionRange(84, 84);
+      }, 150);
+    }
+
+    const replyModal = document.getElementById('email-quick-reply-modal');
+    if (replyModal) {
+      replyModal.classList.add('active');
+    }
+  }
+
+  async submitQuickReply(event) {
+    event.preventDefault();
+    const btn = document.getElementById('btn-submit-quick-reply');
+    const inboundId = document.getElementById('quick-reply-inbound-id')?.value.trim();
+    const toEmail = document.getElementById('quick-reply-to')?.value.trim();
+    const fromEmail = document.getElementById('quick-reply-from')?.value.trim() || 'info@cafhs.org';
+    const subject = document.getElementById('quick-reply-subject')?.value.trim();
+    const body = document.getElementById('quick-reply-body')?.value.trim();
+    const feedback = document.getElementById('quick-reply-feedback');
+
+    if (!toEmail || !subject || !body) {
+      alert('Please provide recipient email, subject line, and response text.');
+      return;
+    }
+
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = '⏳ Dispatching Reply...';
+    }
+
+    try {
+      const res = await fetch('/api/email/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: toEmail,
+          from: fromEmail,
+          subject: subject,
+          body: body,
+          toName: toEmail.split('@')[0]
+        })
+      });
+
+      const data = await res.json();
+
+      if (res.ok && (data.success || data.dispatch)) {
+        // Mark inbound email status as 'replied'
+        if (inboundId) {
+          fetch(`/api/inbound-emails/${inboundId}/status`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'replied' })
+          }).catch(err => console.debug('Status update note:', err));
+        }
+
+        alert(`✅ Email reply successfully dispatched to ${toEmail}!\n\nSubject: "${subject}"\nThe response has been recorded in your outbound audit logs.`);
+        
+        // Close reply modal
+        document.getElementById('email-quick-reply-modal')?.classList.remove('active');
+        
+        // Refresh the emails audit list in place without leaving the tab!
+        this.renderEmailsTab(document.getElementById('admin-tab-content'));
+      } else {
+        const errorMsg = data.error || (data.dispatch && data.dispatch.error) || 'Failed to dispatch email';
+        if (feedback) {
+          feedback.style.display = 'block';
+          feedback.style.background = '#FEE2E2';
+          feedback.style.color = '#991B1B';
+          feedback.style.padding = '0.75rem';
+          feedback.style.borderRadius = '6px';
+          feedback.style.fontSize = '0.82rem';
+          feedback.innerHTML = `⚠️ <strong>Delivery Issue:</strong> ${this.escapeHtml(errorMsg)}`;
+        } else {
+          alert(`⚠️ Delivery issue: ${errorMsg}`);
+        }
       }
-    }, 200);
+    } catch (err) {
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.style.background = '#FEE2E2';
+        feedback.style.color = '#991B1B';
+        feedback.style.padding = '0.75rem';
+        feedback.style.borderRadius = '6px';
+        feedback.style.fontSize = '0.82rem';
+        feedback.innerHTML = `⚠️ <strong>Network error:</strong> ${this.escapeHtml(err.message)}`;
+      } else {
+        alert(`Network error dispatching email: ${err.message}`);
+      }
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = '🚀 Send Reply Now';
+      }
+    }
   }
 
   // --- 14. CHATGPT API CONFIGURATION TAB ---
