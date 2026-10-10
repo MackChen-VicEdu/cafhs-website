@@ -507,9 +507,10 @@ def get_smtp_config():
         'has_password': False, 'has_resend_key': False
     }
 
-def send_outbound_email(to_email, subject, body_text, sender_email=None, sender_name=None):
+def send_outbound_email(to_email, subject, body_text, sender_email=None, sender_name=None, body_html=None):
     """
     Attempt real outbound SMTP transmission if configured and enabled.
+    Supports both plaintext and rich HTML formatting with custom fonts and colors.
     Returns dictionary with transmission status and diagnostics.
     """
     cfg = get_smtp_config()
@@ -530,10 +531,6 @@ def send_outbound_email(to_email, subject, body_text, sender_email=None, sender_
     password = (cfg.get('smtp_pass') or '').strip()
 
     # Envelope and Header From address:
-    # Priority:
-    # 1. Configured gateway from_email (if set in Admin settings)
-    # 2. sender_email passed by caller
-    # 3. Default 'info@cafhs.org'
     configured_from = (cfg.get('from_email') or '').strip()
     from_addr = configured_from if configured_from else (sender_email or 'info@cafhs.org').strip()
     display_name = sender_name or (cfg.get('from_name') or 'CAFHS Canada Health Network').strip()
@@ -545,7 +542,15 @@ def send_outbound_email(to_email, subject, body_text, sender_email=None, sender_
     msg['To'] = to_email
     msg['Reply-To'] = reply_to
     msg['Date'] = email.utils.formatdate(localtime=True)
+
+    # Attach plaintext version first
     msg.attach(MIMEText(body_text, 'plain', 'utf-8'))
+
+    # If HTML is provided or if body_text contains HTML tags, attach rich HTML part
+    if body_html:
+        msg.attach(MIMEText(body_html, 'html', 'utf-8'))
+    elif '<' in body_text and '>' in body_text and ('</' in body_text or '<br' in body_text or '<p' in body_text or '<span' in body_text or '<div' in body_text):
+        msg.attach(MIMEText(body_text, 'html', 'utf-8'))
 
     try:
         if security == 'ssl' or port == 465:
@@ -578,12 +583,12 @@ def send_outbound_email(to_email, subject, body_text, sender_email=None, sender_
             'error': err_msg
         }
 
-def dispatch_and_log_email(cursor, recipient, sender, subject, body, user_email, user_name, chat_log_id=None):
+def dispatch_and_log_email(cursor, recipient, sender, subject, body, user_email, user_name, chat_log_id=None, body_html=None):
     """
     Unified dispatcher: attempts real SMTP transmission (if enabled),
     and records the record into the site_management_emails audit ledger.
     """
-    dispatch_res = send_outbound_email(recipient, subject, body, sender_email=sender)
+    dispatch_res = send_outbound_email(recipient, subject, body, sender_email=sender, body_html=body_html)
     
     if dispatch_res.get('sent'):
         status = 'sent_smtp'
@@ -1858,7 +1863,8 @@ Inquiries: info@cafhs.org
     def handle_post_send_email(self, body):
         to_email = (body.get('to') or body.get('to_email') or '').strip()
         subject = body.get('subject', '').strip()
-        body_text = (body.get('body') or body.get('body_html') or body.get('content') or '').strip()
+        body_html = (body.get('html') or body.get('body_html') or '').strip()
+        body_text = (body.get('body') or body.get('text') or '').strip()
         user_name = (body.get('toName') or body.get('user_name') or 'Community Member').strip()
         user_email = (body.get('user_email') or to_email).strip()
         sender = (body.get('from') or body.get('sender') or 'info@cafhs.org').strip()
@@ -1867,9 +1873,15 @@ Inquiries: info@cafhs.org
             self.send_json({'error': 'Recipient email and subject are required'}, status=400)
             return
 
+        if body_html and not body_text:
+            import re
+            body_text = re.sub(r'<[^>]+>', ' ', body_html).strip()
+
+        final_body = body_html or body_text
+
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
-        res = dispatch_and_log_email(cursor, to_email, sender, subject, body_text, user_email, user_name)
+        res = dispatch_and_log_email(cursor, to_email, sender, subject, final_body, user_email, user_name, body_html=body_html if body_html else None)
         conn.commit()
         conn.close()
 

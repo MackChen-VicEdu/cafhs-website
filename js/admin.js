@@ -2830,21 +2830,22 @@ Sarah</textarea>
         </div>
       </div>
 
-      <!-- Quick Reply In-Place Modal -->
+      <!-- Quick Reply In-Place Modal with Rich Text Formatting -->
       <div id="email-quick-reply-modal" class="modal-overlay">
-        <div class="modal-card" style="max-width: 680px; padding: 2rem;">
+        <div class="modal-card qr-modal-card">
           <button type="button" class="modal-close-btn" onclick="document.getElementById('email-quick-reply-modal').classList.remove('active')">✕</button>
+          
           <div style="display:flex; align-items:center; gap:12px; margin-bottom: 0.75rem;">
-            <div style="width:40px; height:40px; border-radius:10px; background:#EEF2FF; color:#4338CA; display:flex; align-items:center; justify-content:center; font-size:1.3rem;">
-              ↩️
+            <div style="width:42px; height:42px; border-radius:10px; background:#EEF2FF; color:#4338CA; display:flex; align-items:center; justify-content:center; font-size:1.35rem; flex-shrink:0;">
+              ✉️
             </div>
             <div>
-              <h3 style="margin:0; color:#0D3B3A; font-size:1.25rem;">Reply to Inbound Message</h3>
-              <p style="margin:0; font-size:0.82rem; color:#64748B;">Compose and send an official response directly through your verified outbound email gateway.</p>
+              <h3 style="margin:0; color:#0D3B3A; font-size:1.25rem;">Reply to Inbound Message (Rich HTML Composer)</h3>
+              <p style="margin:0; font-size:0.82rem; color:#64748B;">Format with custom fonts, colors, highlights, and links. Dispatched as rich multipart email.</p>
             </div>
           </div>
 
-          <form onsubmit="window.adminPortal.submitQuickReply(event)" style="margin-top:1.25rem;">
+          <form onsubmit="window.adminPortal.submitQuickReply(event)" style="margin-top:1rem;">
             <input type="hidden" id="quick-reply-inbound-id" value="">
             
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem; margin-bottom:0.75rem;">
@@ -2863,20 +2864,144 @@ Sarah</textarea>
               <input type="text" id="quick-reply-subject" class="form-control" required>
             </div>
 
-            <div class="form-group" style="margin-bottom:1rem;">
-              <label style="font-size:0.8rem; font-weight:600; color:#334155;">Reply Message:</label>
-              <textarea id="quick-reply-body" class="form-control" rows="8" placeholder="Type your reply here..." required style="line-height:1.55; font-size:0.88rem; font-family: inherit;"></textarea>
+            <!-- Rich Text Composer -->
+            <div class="form-group" style="margin-bottom:0.75rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem; flex-wrap:wrap; gap:6px;">
+                <label style="font-size:0.8rem; font-weight:600; color:#334155; margin:0;">Reply Message Body:</label>
+                <div style="display:flex; gap:6px; align-items:center;">
+                  <button type="button" class="btn btn-sm btn-outline" id="qr-btn-preview-toggle" style="font-size:0.74rem; padding:2px 8px;" onclick="window.adminPortal.toggleReplyPreview()">
+                    👁️ Preview HTML Email
+                  </button>
+                  <select class="qr-select" style="font-size:0.74rem; height:24px; padding:0 4px;" onchange="window.adminPortal.insertReplyTemplate(this.value); this.value='';">
+                    <option value="">⚡ Insert Template...</option>
+                    <option value="signature">Add CAFHS Signature</option>
+                    <option value="thank_you">Thank You Acknowledgement</option>
+                    <option value="grant">Caregiver Grant Info</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="qr-editor-container">
+                <!-- Toolbar Row 1: Font, Size, Style & Colors -->
+                <div class="qr-toolbar">
+                  <div class="qr-toolbar-row">
+                    <!-- Font Family -->
+                    <div class="qr-toolbar-group" title="Select Font Family">
+                      <select id="qr-font-family" class="qr-select" onchange="window.adminPortal.applyReplyFont(this.value)">
+                        <option value="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">Modern Sans (Default)</option>
+                        <option value="Arial, Helvetica, sans-serif">Arial</option>
+                        <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Segoe UI</option>
+                        <option value="Georgia, 'Times New Roman', serif">Georgia (Serif)</option>
+                        <option value="'Times New Roman', Times, serif">Times New Roman</option>
+                        <option value="'Trebuchet MS', 'Lucida Sans Unicode', sans-serif">Trebuchet MS</option>
+                        <option value="Verdana, Geneva, sans-serif">Verdana</option>
+                        <option value="'Courier New', Courier, monospace">Courier (Code)</option>
+                        <option value="Tahoma, Verdana, Segoe, sans-serif">Tahoma</option>
+                      </select>
+                    </div>
+
+                    <!-- Font Size -->
+                    <div class="qr-toolbar-group" title="Select Font Size">
+                      <select id="qr-font-size" class="qr-select" onchange="window.adminPortal.applyReplyFontSize(this.value)">
+                        <option value="15px">Normal (15px)</option>
+                        <option value="13px">Small (13px)</option>
+                        <option value="18px">Subtitle (18px)</option>
+                        <option value="22px">Large (22px)</option>
+                        <option value="26px">Heading (26px)</option>
+                      </select>
+                    </div>
+
+                    <div class="qr-divider"></div>
+
+                    <!-- Bold, Italic, Underline, Strikethrough -->
+                    <div class="qr-toolbar-group">
+                      <button type="button" class="qr-btn" onmousedown="event.preventDefault()" onclick="window.adminPortal.execReplyCmd('bold')" title="Bold (Ctrl+B)"><b>B</b></button>
+                      <button type="button" class="qr-btn" onmousedown="event.preventDefault()" onclick="window.adminPortal.execReplyCmd('italic')" title="Italic (Ctrl+I)"><i>I</i></button>
+                      <button type="button" class="qr-btn" onmousedown="event.preventDefault()" onclick="window.adminPortal.execReplyCmd('underline')" title="Underline (Ctrl+U)"><u>U</u></button>
+                      <button type="button" class="qr-btn" onmousedown="event.preventDefault()" onclick="window.adminPortal.execReplyCmd('strikeThrough')" title="Strikethrough"><s>S</s></button>
+                    </div>
+
+                    <div class="qr-divider"></div>
+
+                    <!-- Text Colors -->
+                    <div class="qr-toolbar-group" title="Text Color Palette">
+                      <span style="font-size:0.75rem; font-weight:600; color:#475569; margin-right:2px;">🎨</span>
+                      <button type="button" class="qr-color-swatch" style="background:#0F2B48;" title="Executive Navy" onmousedown="event.preventDefault()" onclick="window.adminPortal.applyReplyColor('#0F2B48')"></button>
+                      <button type="button" class="qr-color-swatch" style="background:#0D3B3A;" title="CAFHS Deep Teal" onmousedown="event.preventDefault()" onclick="window.adminPortal.applyReplyColor('#0D3B3A')"></button>
+                      <button type="button" class="qr-color-swatch" style="background:#1E293B;" title="Slate Charcoal" onmousedown="event.preventDefault()" onclick="window.adminPortal.applyReplyColor('#1E293B')"></button>
+                      <button type="button" class="qr-color-swatch" style="background:#2563EB;" title="Royal Blue" onmousedown="event.preventDefault()" onclick="window.adminPortal.applyReplyColor('#2563EB')"></button>
+                      <button type="button" class="qr-color-swatch" style="background:#16A34A;" title="Forest Green" onmousedown="event.preventDefault()" onclick="window.adminPortal.applyReplyColor('#16A34A')"></button>
+                      <button type="button" class="qr-color-swatch" style="background:#DC2626;" title="Crimson Red" onmousedown="event.preventDefault()" onclick="window.adminPortal.applyReplyColor('#DC2626')"></button>
+                      <button type="button" class="qr-color-swatch" style="background:#D97706;" title="Warm Amber" onmousedown="event.preventDefault()" onclick="window.adminPortal.applyReplyColor('#D97706')"></button>
+                      <button type="button" class="qr-color-swatch" style="background:#7C3AED;" title="Purple" onmousedown="event.preventDefault()" onclick="window.adminPortal.applyReplyColor('#7C3AED')"></button>
+                      <input type="color" id="qr-color-input" class="qr-color-input" value="#0F2B48" title="Custom color picker" onchange="window.adminPortal.applyReplyColor(this.value)">
+                    </div>
+
+                    <div class="qr-divider"></div>
+
+                    <!-- Text Background Highlights -->
+                    <div class="qr-toolbar-group" title="Background Highlight">
+                      <span style="font-size:0.75rem; font-weight:600; color:#475569; margin-right:2px;">🖍️</span>
+                      <button type="button" class="qr-color-swatch" style="background:#FEF08A;" title="Yellow Marker" onmousedown="event.preventDefault()" onclick="window.adminPortal.applyReplyHighlight('#FEF08A')"></button>
+                      <button type="button" class="qr-color-swatch" style="background:#BBF7D0;" title="Green Marker" onmousedown="event.preventDefault()" onclick="window.adminPortal.applyReplyHighlight('#BBF7D0')"></button>
+                      <button type="button" class="qr-color-swatch" style="background:#BFDBFE;" title="Blue Marker" onmousedown="event.preventDefault()" onclick="window.adminPortal.applyReplyHighlight('#BFDBFE')"></button>
+                      <button type="button" class="qr-color-swatch" style="background:#FBCFE8;" title="Pink Marker" onmousedown="event.preventDefault()" onclick="window.adminPortal.applyReplyHighlight('#FBCFE8')"></button>
+                      <button type="button" class="qr-btn" style="font-size:0.72rem; padding:0 4px;" title="Clear Highlight" onmousedown="event.preventDefault()" onclick="window.adminPortal.applyReplyHighlight('transparent')">None</button>
+                    </div>
+                  </div>
+
+                  <!-- Toolbar Row 2: Alignment, Lists, Links, Clear -->
+                  <div class="qr-toolbar-row">
+                    <div class="qr-toolbar-group">
+                      <button type="button" class="qr-btn" onmousedown="event.preventDefault()" onclick="window.adminPortal.execReplyCmd('justifyLeft')" title="Align Left">⫷ Left</button>
+                      <button type="button" class="qr-btn" onmousedown="event.preventDefault()" onclick="window.adminPortal.execReplyCmd('justifyCenter')" title="Align Center">≡ Center</button>
+                      <button type="button" class="qr-btn" onmousedown="event.preventDefault()" onclick="window.adminPortal.execReplyCmd('justifyRight')" title="Align Right">⫸ Right</button>
+                    </div>
+
+                    <div class="qr-divider"></div>
+
+                    <div class="qr-toolbar-group">
+                      <button type="button" class="qr-btn" onmousedown="event.preventDefault()" onclick="window.adminPortal.execReplyCmd('insertUnorderedList')" title="Bullet List">• Bullets</button>
+                      <button type="button" class="qr-btn" onmousedown="event.preventDefault()" onclick="window.adminPortal.execReplyCmd('insertOrderedList')" title="Numbered List">1. Numbers</button>
+                    </div>
+
+                    <div class="qr-divider"></div>
+
+                    <div class="qr-toolbar-group">
+                      <button type="button" class="qr-btn" onmousedown="event.preventDefault()" onclick="window.adminPortal.insertReplyLink()" title="Insert Link">🔗 Link</button>
+                      <button type="button" class="qr-btn" onmousedown="event.preventDefault()" onclick="window.adminPortal.execReplyCmd('insertHorizontalRule')" title="Horizontal Divider">― Line</button>
+                      <button type="button" class="qr-btn" onmousedown="event.preventDefault()" onclick="window.adminPortal.execReplyCmd('removeFormat')" title="Clear Formatting">🧹 Clear</button>
+                      <button type="button" class="qr-btn" onmousedown="event.preventDefault()" onclick="window.adminPortal.execReplyCmd('undo')" title="Undo">↺</button>
+                      <button type="button" class="qr-btn" onmousedown="event.preventDefault()" onclick="window.adminPortal.execReplyCmd('redo')" title="Redo">↻</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Editable Content Area -->
+                <div id="quick-reply-editor" class="qr-editor" contenteditable="true" spellcheck="true" placeholder="Compose your response here. Highlight text to apply custom colors, fonts, and styles..."></div>
+              </div>
+
+              <!-- HTML Live Preview Container (Toggled via button) -->
+              <div id="quick-reply-preview-box" class="qr-preview-box" style="display:none;"></div>
+              
+              <!-- Hidden textarea for fallback / syncing -->
+              <textarea id="quick-reply-body" style="display:none;"></textarea>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.35rem; font-size:0.75rem; color:#64748B;">
+                <span>✨ Highlight any text to customize font, color, or background highlight.</span>
+                <span id="qr-char-count">0 characters</span>
+              </div>
             </div>
 
             <div id="quick-reply-feedback" style="margin-bottom:0.75rem; display:none;"></div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-color); padding-top:1rem;">
               <span style="font-size:0.75rem; color:#64748B;">
-                🍁 Dispatched via CAFHS SMTP Gateway • Logged in database
+                🍁 Dispatched via CAFHS Gateway • Rich HTML + Plain Text Multipart
               </span>
               <div style="display:flex; gap:0.5rem;">
                 <button type="button" class="btn btn-secondary" onclick="document.getElementById('email-quick-reply-modal').classList.remove('active')">Cancel</button>
-                <button type="submit" class="btn btn-primary" id="btn-submit-quick-reply" style="font-weight:700;">🚀 Send Reply Now</button>
+                <button type="submit" class="btn btn-primary" id="btn-submit-quick-reply" style="font-weight:700;">🚀 Send Styled Reply</button>
               </div>
             </div>
           </form>
@@ -2979,9 +3104,16 @@ Sarah</textarea>
           </td>
           <td style="white-space:nowrap; font-size:0.78rem; color:#64748B;">${dateStr}</td>
           <td>
-            <button class="btn btn-outline btn-sm" onclick="window.adminPortal.showEmailDetail(${originalIdx})">
-              👁️ View Content
-            </button>
+            <div style="display:flex; gap:5px; align-items:center;">
+              <button class="btn btn-outline btn-sm" onclick="window.adminPortal.showEmailDetail(${originalIdx})">
+                👁️ View
+              </button>
+              ${isInbound ? `
+                <button class="btn btn-primary btn-sm" style="font-size:0.75rem; padding:3px 8px; font-weight:600;" onclick="window.adminPortal.openQuickReplyModal(${originalIdx})">
+                  ↩️ Reply
+                </button>
+              ` : ''}
+            </div>
           </td>
         </tr>
       `;
@@ -3130,22 +3262,218 @@ ${this.escapeHtml(email.body || '(Empty body)')}
     }
   }
 
+  // --- Rich Text Composer Helpers for Quick Reply Modal ---
+
+  saveReplySelection() {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) {
+      const editor = document.getElementById('quick-reply-editor');
+      const range = sel.getRangeAt(0);
+      if (editor && editor.contains(range.commonAncestorContainer)) {
+        this._replySavedRange = range.cloneRange();
+      }
+    }
+  }
+
+  restoreReplySelection() {
+    const editor = document.getElementById('quick-reply-editor');
+    if (editor) editor.focus();
+    if (this._replySavedRange) {
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(this._replySavedRange);
+    }
+  }
+
+  execReplyCmd(cmd, val = null) {
+    this.restoreReplySelection();
+    document.execCommand(cmd, false, val);
+    this.saveReplySelection();
+    this.syncReplyBody();
+  }
+
+  applyReplyFont(fontFamily) {
+    this.restoreReplySelection();
+    document.execCommand('fontName', false, fontFamily);
+    this.saveReplySelection();
+    this.syncReplyBody();
+  }
+
+  applyReplyFontSize(sizePx) {
+    this.restoreReplySelection();
+    const editor = document.getElementById('quick-reply-editor');
+    if (!editor) return;
+    document.execCommand('fontSize', false, '7');
+    const fontEls = editor.querySelectorAll('font[size="7"]');
+    fontEls.forEach(el => {
+      el.removeAttribute('size');
+      el.style.fontSize = sizePx;
+    });
+    this.saveReplySelection();
+    this.syncReplyBody();
+  }
+
+  applyReplyColor(color) {
+    this.restoreReplySelection();
+    document.execCommand('foreColor', false, color);
+    this.saveReplySelection();
+    this.syncReplyBody();
+  }
+
+  applyReplyHighlight(color) {
+    this.restoreReplySelection();
+    if (!document.execCommand('hiliteColor', false, color)) {
+      document.execCommand('backColor', false, color);
+    }
+    this.saveReplySelection();
+    this.syncReplyBody();
+  }
+
+  insertReplyLink() {
+    this.restoreReplySelection();
+    const url = prompt('Enter link URL (e.g., https://cafhs.org/programs):', 'https://');
+    if (url && url !== 'https://') {
+      document.execCommand('createLink', false, url);
+      this.syncReplyBody();
+    }
+  }
+
+  insertReplyTemplate(templateType) {
+    const editor = document.getElementById('quick-reply-editor');
+    if (!editor) return;
+    if (templateType === 'signature') {
+      editor.focus();
+      document.execCommand('insertHTML', false, `
+        <div style="border-top:1px solid #CBD5E1; padding-top:12px; margin-top:16px;">
+          <strong style="color:#0D3B3A; font-size:15px;">The Executive Management Team</strong><br>
+          <span style="color:#0D9488; font-weight:600; font-size:13px;">Canadian Association of Family Health Support (CAFHS)</span><br>
+          <span style="color:#64748B; font-size:12px;">Inquiries: <a href="mailto:info@cafhs.org" style="color:#0D9488; text-decoration:none;">info@cafhs.org</a> • Website: <a href="https://cafhs.org" style="color:#0D9488; text-decoration:none;">https://cafhs.org</a></span>
+        </div>
+      `);
+    } else if (templateType === 'thank_you') {
+      editor.innerHTML = `
+        <p>Hello,</p>
+        <p>Thank you so much for reaching out to the <strong style="color:#0D3B3A;">Canadian Association of Family Health Support (CAFHS)</strong>.</p>
+        <p>We have received your inquiry and our community care team is reviewing your message. We strive to support caregivers, youth, and families across Canada with rapid, compassionate guidance.</p>
+        <p>If you have any further questions or documents to provide, please reply directly to this email.</p>
+        <div style="border-top:1px solid #CBD5E1; padding-top:12px; margin-top:16px;">
+          <strong style="color:#0D3B3A; font-size:15px;">The Executive Management Team</strong><br>
+          <span style="color:#0D9488; font-weight:600; font-size:13px;">Canadian Association of Family Health Support (CAFHS)</span><br>
+          <span style="color:#64748B; font-size:12px;">Inquiries: info@cafhs.org • Website: https://cafhs.org</span>
+        </div>
+      `;
+    } else if (templateType === 'grant') {
+      editor.innerHTML = `
+        <p>Hello,</p>
+        <p>Thank you for inquiring about the <span style="background-color:#FEF08A; font-weight:600; padding:2px 4px; border-radius:3px;">CAFHS Caregiver & Healthcare Training Grant Program</span>.</p>
+        <p>Our grant allocations support frontline healthcare student bursaries and caregiver respite assistance across Ontario and Canadian communities. 100% of designated community contributions are disbursed directly to accredited partner institutions.</p>
+        <p>Please let us know your specific questions or training background so we can connect you with the appropriate resources.</p>
+        <div style="border-top:1px solid #CBD5E1; padding-top:12px; margin-top:16px;">
+          <strong style="color:#0D3B3A; font-size:15px;">The Executive Management Team</strong><br>
+          <span style="color:#0D9488; font-weight:600; font-size:13px;">Canadian Association of Family Health Support (CAFHS)</span><br>
+          <span style="color:#64748B; font-size:12px;">Inquiries: info@cafhs.org • Website: https://cafhs.org</span>
+        </div>
+      `;
+    }
+    this.syncReplyBody();
+  }
+
+  syncReplyBody() {
+    const editor = document.getElementById('quick-reply-editor');
+    const textarea = document.getElementById('quick-reply-body');
+    const charCounter = document.getElementById('qr-char-count');
+    if (editor && textarea) {
+      textarea.value = editor.innerText.trim();
+      if (charCounter) {
+        charCounter.textContent = `${editor.innerText.trim().length} characters`;
+      }
+    }
+  }
+
+  toggleReplyPreview() {
+    const previewBox = document.getElementById('quick-reply-preview-box');
+    const toggleBtn = document.getElementById('qr-btn-preview-toggle');
+    const editor = document.getElementById('quick-reply-editor');
+    const subj = document.getElementById('quick-reply-subject')?.value || 'Message Preview';
+    if (!previewBox) return;
+
+    if (previewBox.style.display === 'none') {
+      const emailHtml = this.generateEmailWrapperHtml(editor ? editor.innerHTML : '', subj);
+      previewBox.innerHTML = `
+        <div style="margin-bottom:8px; font-weight:700; color:#0D3B3A; font-size:0.85rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px;">
+          <span>📧 Live Recipient Email Preview (How Gmail & Outlook See It):</span>
+          <span style="font-size:0.75rem; color:#64748B;">Subject: "${this.escapeHtml(subj)}"</span>
+        </div>
+        <div style="border:1px solid #CBD5E1; border-radius:6px; overflow:hidden;">
+          ${emailHtml}
+        </div>
+      `;
+      previewBox.style.display = 'block';
+      if (toggleBtn) toggleBtn.textContent = '✏️ Close Preview';
+    } else {
+      previewBox.style.display = 'none';
+      if (toggleBtn) toggleBtn.textContent = '👁️ Preview HTML Email';
+    }
+  }
+
+  generateEmailWrapperHtml(innerContent, subject) {
+    return `
+      <div style="background-color: #f1f5f9; padding: 24px 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 620px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.04);">
+          <tr>
+            <td style="background-color: #0D3B3A; padding: 22px 26px; text-align: left;">
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td>
+                    <span style="font-size: 19px; font-weight: 700; color: #ffffff; letter-spacing: -0.3px; display: block;">
+                      🍁 Canadian Association of Family Health Support
+                    </span>
+                    <span style="font-size: 12px; color: #99f6e4; font-weight: 500; display: block; margin-top: 3px;">
+                      Official Community Health Communication • info@cafhs.org
+                    </span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 28px 26px; color: #1e293b; font-size: 15px; line-height: 1.65;">
+              ${innerContent}
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color: #f8fafc; padding: 18px 26px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b; line-height: 1.55;">
+              <strong style="color: #334155;">Canadian Association of Family Health Support (CAFHS)</strong><br>
+              Supporting frontline family health, community care, and caregiver education across Canada.<br>
+              Website: <a href="https://cafhs.org" style="color: #0d9488; text-decoration: none; font-weight: 600;">https://cafhs.org</a> • Inquiries: <a href="mailto:info@cafhs.org" style="color: #0d9488; text-decoration: none; font-weight: 600;">info@cafhs.org</a>
+            </td>
+          </tr>
+        </table>
+      </div>
+    `;
+  }
+
   openQuickReplyModal(idx) {
     const email = this._cachedEmails ? this._cachedEmails[idx] : null;
     if (!email) return;
 
-    // Close detail modal
+    // Close detail modal if open
     document.getElementById('email-audit-detail-modal')?.classList.remove('active');
 
     // Populate Reply modal fields in-place
     const toInput = document.getElementById('quick-reply-to');
     const fromInput = document.getElementById('quick-reply-from');
     const subjInput = document.getElementById('quick-reply-subject');
-    const bodyInput = document.getElementById('quick-reply-body');
+    const editor = document.getElementById('quick-reply-editor');
+    const textarea = document.getElementById('quick-reply-body');
     const idInput = document.getElementById('quick-reply-inbound-id');
     const feedbackBox = document.getElementById('quick-reply-feedback');
+    const previewBox = document.getElementById('quick-reply-preview-box');
+    const toggleBtn = document.getElementById('qr-btn-preview-toggle');
 
     if (feedbackBox) feedbackBox.style.display = 'none';
+    if (previewBox) previewBox.style.display = 'none';
+    if (toggleBtn) toggleBtn.textContent = '👁️ Preview HTML Email';
 
     // Extract pure email address from "Name <email>" if present
     const match = email.sender ? email.sender.match(/<([^>]+)>/) : null;
@@ -3163,11 +3491,37 @@ ${this.escapeHtml(email.body || '(Empty body)')}
       subjInput.value = email.subject.startsWith('Re:') ? email.subject : `Re: ${email.subject}`;
     }
 
-    if (bodyInput) {
-      bodyInput.value = `Hello,\n\nThank you for contacting the Canadian Association of Family Health Support (CAFHS).\n\n\n\nSincerely,\nThe Executive Management Team\nCanadian Association of Family Health Support (CAFHS)\nInquiries: info@cafhs.org • Website: https://cafhs.org`;
+    if (editor) {
+      editor.innerHTML = `
+        <p>Hello,</p>
+        <p>Thank you for contacting the <strong style="color: #0D3B3A;">Canadian Association of Family Health Support (CAFHS)</strong>.</p>
+        <p><br></p>
+        <div style="border-top: 1px solid #CBD5E1; padding-top: 12px; margin-top: 16px;">
+          <strong style="color: #0D3B3A; font-size: 15px;">The Executive Management Team</strong><br>
+          <span style="color: #0D9488; font-weight: 600; font-size: 13px;">Canadian Association of Family Health Support (CAFHS)</span><br>
+          <span style="color: #64748B; font-size: 12px;">Inquiries: <a href="mailto:info@cafhs.org" style="color: #0D9488; text-decoration: none;">info@cafhs.org</a> • Website: <a href="https://cafhs.org" style="color: #0D9488; text-decoration: none;">https://cafhs.org</a></span><br>
+          <span style="color: #94A3B8; font-size: 11px;">🍁 Supporting Frontline Caregivers, Healthcare Students & Canadian Families</span>
+        </div>
+      `;
+      this.syncReplyBody();
+
+      editor.onmouseup = () => this.saveReplySelection();
+      editor.onkeyup = () => { this.saveReplySelection(); this.syncReplyBody(); };
+      editor.oninput = () => { this.saveReplySelection(); this.syncReplyBody(); };
+
       setTimeout(() => {
-        bodyInput.focus();
-        bodyInput.setSelectionRange(84, 84);
+        editor.focus();
+        const pTags = editor.querySelectorAll('p');
+        if (pTags.length >= 3) {
+          const targetP = pTags[2];
+          const sel = window.getSelection();
+          const range = document.createRange();
+          range.setStart(targetP, 0);
+          range.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(range);
+          this.saveReplySelection();
+        }
       }, 150);
     }
 
@@ -3184,18 +3538,22 @@ ${this.escapeHtml(email.body || '(Empty body)')}
     const toEmail = document.getElementById('quick-reply-to')?.value.trim();
     const fromEmail = document.getElementById('quick-reply-from')?.value.trim() || 'info@cafhs.org';
     const subject = document.getElementById('quick-reply-subject')?.value.trim();
-    const body = document.getElementById('quick-reply-body')?.value.trim();
+    const editor = document.getElementById('quick-reply-editor');
+    const rawHtml = editor ? editor.innerHTML.trim() : '';
+    const bodyText = editor ? editor.innerText.trim() : '';
     const feedback = document.getElementById('quick-reply-feedback');
 
-    if (!toEmail || !subject || !body) {
+    if (!toEmail || !subject || !bodyText) {
       alert('Please provide recipient email, subject line, and response text.');
       return;
     }
 
     if (btn) {
       btn.disabled = true;
-      btn.textContent = '⏳ Dispatching Reply...';
+      btn.textContent = '⏳ Dispatching Styled Reply...';
     }
+
+    const formattedHtmlEmail = this.generateEmailWrapperHtml(rawHtml, subject);
 
     try {
       const res = await fetch('/api/email/send', {
@@ -3205,7 +3563,8 @@ ${this.escapeHtml(email.body || '(Empty body)')}
           to: toEmail,
           from: fromEmail,
           subject: subject,
-          body: body,
+          body: bodyText,
+          html: formattedHtmlEmail,
           toName: toEmail.split('@')[0]
         })
       });
@@ -3222,7 +3581,7 @@ ${this.escapeHtml(email.body || '(Empty body)')}
           }).catch(err => console.debug('Status update note:', err));
         }
 
-        alert(`✅ Email reply successfully dispatched to ${toEmail}!\n\nSubject: "${subject}"\nThe response has been recorded in your outbound audit logs.`);
+        alert(`✅ Styled HTML email reply successfully dispatched to ${toEmail}!\n\nSubject: "${subject}"\nThe response with your chosen fonts, colors, and styling has been recorded in your outbound audit logs.`);
         
         // Close reply modal
         document.getElementById('email-quick-reply-modal')?.classList.remove('active');
